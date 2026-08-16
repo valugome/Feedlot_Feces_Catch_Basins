@@ -1,5 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Analyses/R Analyses')
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -61,13 +60,13 @@ load_packages(cran_pkgs)
 
 
 #IMPORT METADATA####
-metadata <- read.csv('Data/Metadata_Feedlot_CatchBasins.csv', 
+metadata <- read.csv('Metadata_Feedlot_CatchBasins.csv', 
                      check.names = F)%>%
   mutate(SampleID=sampleID)%>%
   column_to_rownames(var="sampleID") #making sampleID rownames
 
 ##Host-free reads####
-hostrem <- read.csv('Data/HostRem_Reads_Feedlot_CatchBasins.csv')
+hostrem <- read.csv('HostRem_Reads_Feedlot_CatchBasins.csv')
 
 #Change zymo- to zymo. as they are in metadata
 hostrem[128, "SampleID"] <- "Zymo.1a"
@@ -104,7 +103,7 @@ salmonella.palette <- c("positive"= "#fc8d62", "negative" = "#8da0cb")
 
 #SEQUENCING DEPTH #####
 ##Trimmomatic stats###
-trimmomatic_reads <- read.csv('Data/Trimmomatic_Reads_Feedlot_CatchBasins.csv')
+trimmomatic_reads <- read.csv('Trimmomatic_Reads_Feedlot_CatchBasins.csv')
 
 
 #Merge with metadata
@@ -287,9 +286,7 @@ sfigure1 <- cowplot::plot_grid(
   ncol = 1)+
   theme(plot.margin = margin(t = 10, r = 10, b = 10, l = 10))
 sfigure1
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure1.png", 
-       plot = sfigure1, 
-       device = "png", width = 10, height = 10, dpi = 600)
+
 
 #HOST REMOVAL STATS#####
 hostrem
