@@ -1,5 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Analyses/R Analyses/')
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -173,13 +172,7 @@ figure1 <- plot_grid(seroseq_serovars.plot,
                      ncol = 1,
                      rel_heights = c(0.75, 0.25))
 figure1
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure1.png", 
-       plot = figure1, 
-       device = "png", 
-       dpi = 600, 
-       bg = "white",
-       width = 15, 
-       height =15)
+
 
 
 ##BETADIV OF SALMONELLA SEROVARS####
@@ -249,8 +242,6 @@ stable5_salmonella_seroseq <- stable5.0%>%
          `Pr(>F)` = format(`Pr(>F)`, scientific = TRUE, digits = 3))%>%
   select(Dataset, `Fixed Effect`, `Df`, SumOfSqs, R2 , `F`, `Pr(>F)`)
 stable5_salmonella_seroseq
-write_xlsx(stable5_salmonella_seroseq, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable5_0.xlsx")
 
 
 ##PERMDISP

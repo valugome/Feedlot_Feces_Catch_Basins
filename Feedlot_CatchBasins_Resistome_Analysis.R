@@ -1,6 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Analyses/R Analyses/')
-
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -854,7 +852,6 @@ alpha_div_anovaIII_resistome
 ####SUPPLEMENTARY TABLE 6_2######
 stable6.2 <- alpha_div_anovaIII_resistome%>%
   select(Dataset, Metric, `Fixed Effects`, `F`, Df, `Pr(>F)`)
-write_xlsx(stable6.2, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable6_2.xlsx")
 
 ##EMMEANS TABLES#######
 ###RICHNESS####
@@ -971,8 +968,6 @@ alpha_div_emmeans_resistome <- alpha_div_emmeans_resistome%>%
   
 ####SUPPLEMENTARY TABLE 7_2 ###### 
 stable7.2 <- alpha_div_emmeans_resistome
-write_xlsx(stable7.2, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable7_2.xlsx")
 
 
 ##EMMEANS PLOTS######
@@ -1148,15 +1143,7 @@ figure3B <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome+
                       labels = c("B"), 
                       label_size = 22)
 figure3B
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure3B.png", 
-       plot = figure3B, 
-       device = "png",
-       dpi = 600,
-       # width = 8, 
-       # height =12,
-       width = 16,
-       height =10,
-       bg = "white")
+
 
 
 #####DNA vs cDNA facetted by Feces and CB#####
@@ -1270,15 +1257,7 @@ figure6B <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome+
                         theme(plot.title = element_blank()), 
                       labels = c("B"), 
                       label_size = 22)
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure6B.png", 
-       plot = figure6B, 
-       device = "png",
-       dpi = 600,
-       # width = 8, 
-       # height =12,
-       width = 16,
-       height = 10,
-       bg = "white")
+
 
 
 ##BOX PLOTS ALPHA DIV ######
@@ -2155,12 +2134,7 @@ sfigure6CandD <- ggarrange(DNA_BC_beta_div_spider_feedlot+
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure6CandD
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure6CD.svg", 
-       plot = sfigure6CandD, 
-       device = "svg", 
-       #dpi = 600, 
-       width = 18, height = 6, 
-       bg = "white")
+
 
 ####SUPPLEMENTARY FIGURE 7CD#######
 #####Effect of feedlot On Feces and CB#####
@@ -2175,12 +2149,7 @@ sfigure7CandD <- ggarrange(feces_feedlot_BC_beta_div+
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure7CandD
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure7CD.svg", 
-       plot = sfigure7CandD, 
-       device = "svg", 
-       #dpi = 600,
-       width = 18, 
-       height = 6)
+
 
 ###SUPPLEMENTARY TABLE 5- RESISTOME SECTION#######
 stable5_resistome <- bind_rows(stable5.9,
@@ -2189,8 +2158,6 @@ stable5_resistome <- bind_rows(stable5.9,
                                stable5.12)%>%  
   select(Dataset, `Library Type`, `Sample Type`, `Fixed Effect`, Df, SumOfSqs, R2, `F`, `Pr(>F)`)
 stable5_resistome
-write_xlsx(stable5_resistome, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable5_2.xlsx")
 
 #DENDROGRAMS #####
 ##All samples####
@@ -2365,8 +2332,6 @@ most_abun_classes_ARG
 stable8.2 <- most_abun_classes_ARG%>%
   mutate(Dataset = "Resistome")%>%
   select(Dataset, `Library Type`, `Sample Type`, `Class`, `Mean Relative Abundance (%) ± SD`)
-write_xlsx(stable8.2,
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable8_2.xlsx")
 
 #Plot
 dendroRA.ARG.class.plot <- ggplot(data2_ARG_class.filt.melt, aes(x=Sample, y= Abundance, fill = Class)) +
@@ -2438,13 +2403,7 @@ figure4DEF <- plot_grid(cDNAandDNA_BC_beta_div_spider_sampletype,
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 30, face = "bold"))
 figure4DEF
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4DEF.svg", 
-       plot = figure4DEF, 
-       device = "svg",
-       #dpi = 600,
-       width = 30, 
-       height = 14, 
-       bg = "white")
+
 
 
 ##RA PLOT - MECHANISM####
@@ -2615,8 +2574,6 @@ most_abun_group
 stable9.2 <- most_abun_group%>%
   mutate(Dataset = "Resistome")%>%
   select(Dataset, `Library Type`, `Sample Type`, `Mean Relative Abundance (%) ± SD`, everything()) 
-write_xlsx(stable9.2,
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable9_2.xlsx")
 
 #Create base colors based on class palette
 base_color_class_2 <- c(class.filt.palette, 
@@ -2715,13 +2672,7 @@ figure7DEF <- plot_grid(WaterandFeces_ARG_beta_div_spider_genmat,
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 30, face = "bold"))
 figure7DEF
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure7DEF.svg", 
-       plot = figure7DEF, 
-       device = "svg", 
-       #dpi = 600, 
-       width = 30, 
-       height =14, 
-       bg = "white")
+
 
 
 #DIFFERNTIAL ABUNDANCE ####
@@ -3279,13 +3230,7 @@ figure8C <-plot_grid(combined_plot_feces,
   #labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure8C
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8C.png", 
-       plot = figure8C, 
-       device = "png",
-       dpi = 600,
-       width = 19, 
-       height = 20, 
-       bg = "white")
+
 
 ##DNA (CB vs Feces)#####
 ###ANCOMBC#######
@@ -4060,13 +4005,7 @@ figure5CandD <-plot_grid(combined_plot_DNA+
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure5CandD
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure5CD.png", 
-       plot = figure5CandD, 
-       device = "png",
-       dpi =600,
-       width = 19, 
-       height = 25,  
-       bg = "white")
+
 
 #UPSET PLOT #####
 ##DNA (CB vs. Feces)-Figure 4C#####

@@ -1,6 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Analyses/R Analyses')
-
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -1804,13 +1802,7 @@ cDNAandDNA_BC_pathways_beta_div_spider_sampletype
 ##DNA and cDNA ordination plots - Figure 4GH
 figure4GH <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
 figure4GH
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4GH.svg", 
-       plot = figure4GH, 
-       device = "svg", 
-       #dpi = 600,
-       width = 30, 
-       height = 4.6, 
-       bg = "white")
+
 
 
 ####FIGURE 7GH - EMPHASIS ON LIBRARY TYPE #######
@@ -1839,13 +1831,7 @@ WaterandFeces_pathways_beta_div_spider_genmat
 ##DNA and cDNA ordination plots - Figure 7GH
 figure7GH <- WaterandFeces_pathways_beta_div_spider_genmat
 figure7GH
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure7GH.svg", 
-       plot = figure7GH, 
-       device = "svg", 
-       dpi = 600, 
-       width = 30, 
-       height = 4.6, 
-       bg = "white")
+
 
 ####SUPPLEMENTARY FIGURE 6EF#######
 #####Effect of feedlot On DNA and cDNA#####
@@ -1860,13 +1846,7 @@ sfigure6EandF <- ggarrange(DNA_pathways_BC_beta_div_spider_feedlot+
   # labs(title = "FUNCTIONAL PATHWAYS")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure6EandF
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure6EF.svg", 
-       plot = sfigure6EandF, 
-       device = "svg", 
-       width = 18, 
-       height = 6, 
-       #dpi = 600, 
-       bg = "white")
+
 
 ####SUPPLEMENTARY FIGURE 7EF#######
 #####Effect of feedlot On Feces and CB#####
@@ -1884,13 +1864,6 @@ sfigure7EandF <- ggarrange(fecespathways_feedlot_BC_beta_div+
   # labs(title = "FUNCTIONAL PATHWAYS")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure7EandF
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure7EF.svg", 
-       plot = sfigure7EandF , 
-       device = "svg",
-       bg = "white", 
-       dpi = 600,
-       width = 18, 
-       height = 6)
 
 
 ###SUPPLEMENTARY TABLE 5 - PATHWAYS SECTION#######
@@ -2534,13 +2507,7 @@ figure5EandF <-plot_grid(DA_pathways_DNA_plot_MaAslinANCOM+
   # labs(title = "FUNCTIONAL PATHWAYS")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure5EandF
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure5EF.png", 
-       plot = figure5EandF, 
-       device = "png",
-       dpi = 600,
-       width = 19, 
-       height = 5.5,  
-       bg = "white")
+
 
 ##FECES (DNA vs cDNA)#####
 ###ANCOMBC#######
@@ -3161,102 +3128,3 @@ figure8D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM+
 # labs(title = "FUNCTIONAL PATHWAYS")+
 # theme(plot.title = element_text(size = 40, face = "bold"))
 figure8D
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8D.png", 
-       plot = figure8D, 
-       device = "png",
-       dpi = 600,
-       width = 19, 
-       height = 16, 
-       bg = "white")
-
-# ##UPSET PLOT - PATHWAYS #####
-# #####DNA (CB vs. Feces)#####
-# ##making the dataset for upset of UpSetR (binary matrix, present or absent)
-# upset.pathways_ps.DNA <- MicrobiotaProcess::get_upset(pathways_ps.DNA, factorNames="sample_type") 
-# upset.pathways_ps.DNA
-# upset.pathways_ps.DNA <- upset.pathways_ps.DNA%>%
-#   rename("CB" = "Water")
-# #Plot
-# upset_plot_pathways_DNA <-upset(upset.pathways_ps.DNA,
-#                                 sets.bar.color = c("brown",
-#                                                    "#4C72B0"),
-#                                 order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-#                                 point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-#                                 sets.x.label = "OTU count", 
-#                                 set_size.show = F)
-# upset_plot_pathways_DNA
-# 
-# ##Saving 
-# svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4E.svg",
-#         width=7, height=6)
-# upset_plot_pathways_DNA
-# dev.off()
-# 
-# 
-# #####cDNA (CB vs. Feces)#####
-# ##making the dataset for upset of UpSetR (binary matrix, present or absent)
-# upset.pathways_ps.cDNA <- MicrobiotaProcess::get_upset(pathways_ps.cDNA, factorNames="sample_type") 
-# upset.pathways_ps.cDNA
-# upset.pathways_ps.cDNA <- upset.pathways_ps.cDNA%>%
-#   rename("CB" = "Water")
-# 
-# 
-# ##Plot
-# upset_plot_pathways_cDNA <-upset(upset.pathways_ps.cDNA, 
-#                         sets.bar.color = c("brown",
-#                                            "#4C72B0"),
-#                         order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-#                         point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-#                         sets.x.label = "OTU count", 
-#                         set_size.show = F)
-# upset_plot_pathways_cDNA
-# 
-# ##Saving
-# svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4F.svg",
-#         width=7, height=6)
-# upset_plot_pathways_cDNA
-# dev.off()
-# 
-# #####Feces (cDNA vs. DNA)#####
-# ##making the dataset for upset of UpSetR (binary matrix, present or absent)
-# upset.pathways_ps.feces <- MicrobiotaProcess::get_upset(pathways_ps.feces, factorNames="gen_material") 
-# upset.pathways_ps.feces
-# upset.pathways_ps.feces <- upset.pathways_ps.feces%>%
-#   rename("RNA (cDNA)" = "cDNA")
-# 
-# ##Plot
-# upset_plot_pathways_feces <-UpSetR::upset(upset.pathways_ps.feces, 
-#                                           sets.bar.color = c("#CC79A7", "#009E73"), 
-#                                           order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-#                                           point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-#                                           sets.x.label = "OTU count", 
-#                                           set_size.show = F) 
-# upset_plot_pathways_feces
-# 
-# ##Saving figure
-# svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8E.svg",
-#         width=7, height=6)
-# upset_plot_pathways_feces
-# dev.off()
-# 
-# #####CATCH BASINS (cDNA vs. DNA)#####
-# ##making the dataset for upset of UpSetR (binary matrix, present or absent)
-# upset.pathways_ps.water <- MicrobiotaProcess::get_upset(pathways_ps.water, factorNames="gen_material") 
-# upset.pathways_ps.water
-# upset.pathways_ps.water <- upset.pathways_ps.water%>%
-#   rename("RNA (cDNA)" = "cDNA")
-# 
-# ##Plot
-# upset_plot_pathways_water <-grid.grabExpr(UpSetR::upset(upset.pathways_ps.water, 
-#                                                sets.bar.color = c("#CC79A7", "#009E73"), 
-#                                                order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-#                                                point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-#                                                sets.x.label = "OTU count", 
-#                                                set_size.show = F))
-# upset_plot_pathways_water
-# 
-# ##Saving figure
-# svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8F.svg",
-#         width=7, height=6)
-# upset_plot_pathways_water
-# dev.off()
