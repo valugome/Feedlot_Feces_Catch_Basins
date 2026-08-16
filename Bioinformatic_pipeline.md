@@ -151,9 +151,12 @@ concatenate_reads() {
 }
 ```
 
-Here, the ‘vOct22_CHOCOPhlAnSGB_202403’ database was used. 
+For MetaPhlan4 to run within HUMAnN, the ‘vOct22_CHOCOPhlAnSGB_202403’ database was used. 
+
 The MetaPhlan4 database was downloaded from https://cmprod1.cibio.unitn.it/biobakery4/metaphlan_databases/
+
 The Bowtie index for MetaPhlan4 was downloaded from http://cmprod1.cibio.unitn.it/biobakery4/metaphlan_databases/bowtie2_indexes/
+
 
 DNA reads were processed first: 
 ```
