@@ -1,5 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Microbiome/Bacteria_archaea/R_Analysis')
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -56,16 +55,16 @@ load_packages(cran_pkgs)
 
 #Load data####
 ##Trimmomatic stats#####
-trimmomatic <- read.csv('Data/Trimmomatic_Reads_Feedlot_CatchBasins.csv')
+trimmomatic <- read.csv('Trimmomatic_Reads_Feedlot_CatchBasins.csv')
 
 ##SortMeRNA stats#####
-sortmerna <- read.csv('Data/SortMeRNA_Reads_Feedlot_CatchBasins.csv')
+sortmerna <- read.csv('SortMeRNA_Reads_Feedlot_CatchBasins.csv')
 
 ##FLASH stats#####
-flash <- read.csv('Data/FLASH_Reads_Feedlot_CatchBasins.csv')
+flash <- read.csv('FLASH_Reads_Feedlot_CatchBasins.csv')
 
 ##Host Removal stats#####
-hostrem <- read.csv('Data/HostRem_Reads_Feedlot_CatchBasins.csv')
+hostrem <- read.csv('HostRem_Reads_Feedlot_CatchBasins.csv')
 
 #Merge dataframes
 final_feedlot_lagoon_stats <- left_join(trimmomatic, 
@@ -341,7 +340,3 @@ stable2 <- final_feedlot_lagoon_stats %>%
   )
 stable2
   
-write_xlsx(stable2,
-          "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable2.xlsx")
-
-
