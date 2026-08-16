@@ -11,7 +11,7 @@ nextflow run main_AMR++.nf --pipeline trim_qc
 Only paired end reads for which both mates passed quality control were included in downstream analyses.
 
 
-##SortMeRNA
+## SortMeRNA
 The SortMeRNA database was downloaded from https://github.com/biocore/sortmerna/releases/download/v4.3.4/database.tar.gz
 
 Input reads were quality-controlled (QC) paired mates (i.e., paired-end reads output by Trimmomatic for which both mates passed QC)
@@ -30,7 +30,7 @@ sortmerna \
         --log 
 ```
 
-##FLASH Read Merging
+## FLASH Read Merging
 Overlapping quality-controlled (QC) metagenomic and rRNA-filtered metatranscriptomic paired-end reads were merged using FLASH (version 2.2.0).
 
 ```
@@ -44,7 +44,7 @@ flash \
 	--compress-prog-args '-p 8'
 ```
 
-##Host Removal
+## Host Removal
 Merged and unmerged reads were aligned separately to the UMD_3.1.1 Bos taurus reference genome (NCBI RefSeq accession number: GCF_000003055.6) using BWA-MEM (version 0.7.18).
 
 For merged reads: 
@@ -95,7 +95,7 @@ samtools view -h -f 12 -b ${sample_id}.unmerged.host.sorted.bam | \
             -2 ${sample_id}.unmerged.non.host.R2.fastq.gz
 ```
 
-##Kraken2 Taxonomic Classification
+## Kraken2 Taxonomic Classification
 Non-host reads were classified taxonomically using Kraken2 (version 2.1.2) with a confidence threshold of 0 and a prebuilt ‘core_nt’ Kraken2 index (comprised of NCBI’s Core Nucleotide database – index built 10/15/2025), which was downloaded from https://benlangmead.github.io/aws-indexes/k2. 
 
 Merged reads were classified in single-end mode:
@@ -105,7 +105,6 @@ kraken2 $reads \
 	--confidence 0.0 \
 	--report ${report_dir}/${sample_id}.merged.kraken.report \
 	--output ${output_dir}/${sample_id}.merged.kraken.result \
-        --threads $threads \
 	--use-names 
 ```
 
@@ -118,12 +117,11 @@ kraken2 --paired \
 	--confidence 0.0 \
 	--report ${report_dir}/${sample_id}.unmerged.kraken.report \
 	--output ${output_dir}/${sample_id}.unmerged.kraken.result \
-        --threads $threads \
 	--use-names 
 
 ```
 
-##Resistome profiling using AMR++
+## Resistome profiling using AMR++
 
 These steps were performed using the AMR++ v 3.0 ‘merged_resistome’ pipeline under default settings.
 
@@ -134,4 +132,9 @@ nextflow run main_AMR++.nf -profile local \
 	--snp Y \
 	--deduped N
 ```
+
+## HUMAnN Functional Profiling 
+The HUMAnN 4.0.0.alpha.1 version was installed following the tutorial:
+https://docs.google.com/document/d/1rCx5JkuO7wCKWrL8_-UJx_FkopJAfcDFtZktgPspak0/edit?tab=t.0#heading=h.i5hn0zprhwld
+
 
