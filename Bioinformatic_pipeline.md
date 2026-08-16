@@ -121,6 +121,8 @@ kraken2 --paired \
 
 ```
 
+Counts from merged and unmerged reports across all samples were compiled into a single count matrix using custom python scripts provided in the AMR++ v3.0 dev branch (‘kraken2_long_to_wide.py’; github.com/Microbial-Ecology-Group/AMRplusplus/tree/dev). 
+
 ## Resistome profiling using AMR++
 
 These steps were performed using the AMR++ v 3.0 ‘merged_resistome’ pipeline under default settings.
