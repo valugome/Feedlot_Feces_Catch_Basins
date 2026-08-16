@@ -1,5 +1,4 @@
 #LOAD R PACKAGES ######
-setwd('/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Analysis_repository/Analyses/R Analyses')
 # Installs (if needed) and loads packages from CRAN, Bioconductor, GitHub
 load_packages <- function(cran_pkgs = character(0),
                           bioc_pkgs = character(0),
@@ -428,19 +427,10 @@ top_species_zymo
 
 #####SUPPLEMENTARY TABLE 4####
 stable4 <- top_genus_zymo
-write_xlsx(stable4, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable4.xlsx")
 
 #####SUPPLEMENTARY FIGURE 4######
 sfigure4 <- data.zymos.bacteria.fungi.ra.genus.plot
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure4.png", 
-       sfigure4, 
-       device = "png", 
-       width = 10, 
-       height =10, 
-       dpi = 500,
-       bg = "white"
-       )
+
 
 ##EBs and NTC#####
 data.negatives <- subset_samples(data, grepl("EB|NTC", SampleID))
@@ -709,11 +699,7 @@ sfigure3 <- cowplot::plot_grid(
       #plot.title = element_text(size = 32, face = "bold"),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10))
 sfigure3 
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure3.png", 
-       plot = sfigure3, 
-       device = "png", 
-       dpi = 600,
-       width = 10, height =10)
+
 
 
 #COMPARING OTU COUNTS#######
@@ -1773,15 +1759,7 @@ figure3A <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot+
                       labels = c("A"), 
                       label_size = 22)
 figure3A
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure3A.png", 
-       plot = figure3A, 
-       device = "png",
-       dpi = 600,
-       # width = 8,
-       # height =12,
-       width = 16,
-       height = 10,
-       bg = "white")
+
 
 #####DNA vs cDNA facet by Feces and Water#####
 alpha_div_emmeans_cDNAvsDNA_WandF <- alpha_div_emmeans_data %>%
@@ -1899,15 +1877,7 @@ figure6A <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot+
                       labels = c("A"), 
                       label_size = 22)
 figure6A
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure6A.png", 
-       plot = figure6A, 
-       device = "png", 
-       dpi = 600,
-       # width = 8, 
-       # height =12,
-       width = 16,
-       height = 10,
-       bg = "white")
+
 
 
 ## BOX PLOTS ALPHA DIV ######
@@ -3027,11 +2997,7 @@ sfigure6AandB <- ggarrange(DNA_BC_beta_div_spider_feedlot+
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure6AandB
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure6AB.svg", 
-       plot = sfigure6AandB, device = "svg", 
-       #dpi = 600, 
-       bg = "white",
-       width = 18, height = 6)
+
 
 ####SUPPLEMENTARY FIGURE 7AB#######
 #####Effect of feedlot On fecal and catch basin samples#####
@@ -3046,12 +3012,7 @@ sfigure7AandB <- ggarrange(feces_feedlot_BC_beta_div+
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 sfigure7AandB
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure7AB.svg", 
-       plot = sfigure7AandB, 
-       device = "svg", 
-       width = 18,
-       height = 6, 
-       dpi = 600)
+
 
 ###SALMONELLA CULTURE STATUS #######
 ####FECES#########
@@ -3875,13 +3836,7 @@ figure4ABC <- plot_grid(cDNAandDNA_BC_beta_div_spider_sampletype,
   #labs(title = "MICROBIOME")+
   #theme(plot.title = element_text(size = 30, face = "bold"))
 figure4ABC
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4ABC.svg", 
-       plot = figure4ABC, 
-       device = "svg", 
-       #dpi = 600,
-       width = 30, 
-       height = 14, 
-       bg = "white")
+
 
 
 ##ORDER LEVEL####
@@ -4193,13 +4148,7 @@ figure7ABC<- plot_grid(WaterandFeces_beta_div_spider_genmat,
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 30, face = "bold"))
 figure7ABC
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure7ABC.svg", 
-       plot = figure7ABC, 
-       device = "svg",
-       dpi = 600,
-       width = 30, 
-       height =14, 
-       bg = "white")
+
 
 
 ##GENUS LEVEL####
@@ -5055,13 +5004,6 @@ figure8AB <-plot_grid(combined_plot_feces+
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure8AB
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8AB.png", 
-       plot = figure8AB, 
-       dpi = 600,
-       device = "png",
-       width = 19, 
-       height = 15, 
-       bg = "white")
 
 ##DNA (CB vs Feces)#####
 ###ANCOMBC#######
@@ -5768,102 +5710,6 @@ figure5AandB <-plot_grid(combined_plot_DNA +
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure5AandB
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure5AB.png", 
-       plot = figure5AandB, 
-       device = "png",
-       width = 19, 
-       height = 16, 
-       dpi = 600,
-       bg = "white")
-
-#UPSET PLOTS#####
-##DNA (CB vs. Feces)-Figure 4A#####
-##Making the dataset for upset of UpSetR (binary matrix, present or absent)
-upset.data.bacteria.samples.DNA <- MicrobiotaProcess::get_upset(data.bacteria.samples.DNA, factorNames="sample_type") 
-upset.data.bacteria.samples.DNA
-upset.data.bacteria.samples.DNA <- upset.data.bacteria.samples.DNA%>%
-  rename("CB" = "Water")
-
-#Plot
-upset_plot_DNA <-upset(upset.data.bacteria.samples.DNA,
-                       sets.bar.color = c("brown",
-                                          "#4C72B0"),
-                       order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-                       point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-                       sets.x.label = "OTU count", 
-                       set_size.show = F)
-upset_plot_DNA
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4A.svg",
-        width=7, 
-        height=6)
-upset_plot_DNA
-dev.off()
-
-##cDNA (CB vs. Feces) -Figure 4B#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-upset.data.bacteria.samples.cDNA <- MicrobiotaProcess::get_upset(data.bacteria.samples.cDNA, factorNames="sample_type") 
-upset.data.bacteria.samples.cDNA
-upset.data.bacteria.samples.cDNA <- upset.data.bacteria.samples.cDNA%>%
-  rename("CB" = "Water")
-
-#Plot
-upset_plot_cDNA <-upset(upset.data.bacteria.samples.cDNA, 
-                        sets.bar.color = c("brown",
-                                           "#4C72B0"),
-                        order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-                        point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-                        sets.x.label = "OTU count", 
-                        set_size.show = F)
-upset_plot_cDNA
-
-##saving the upset plot
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4B.svg",
-        width=7, height=6)
-upset_plot_cDNA
-dev.off()
-
-
-##Feces (cDNA vs. DNA) - Figure 8A#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-upset.data.bacteria.samples.feces <- MicrobiotaProcess::get_upset(data.bacteria.samples.feces, factorNames="gen_material") 
-upset.data.bacteria.samples.feces
-upset.data.bacteria.samples.feces <- upset.data.bacteria.samples.feces%>%
-  rename("RNA (cDNA)" = "cDNA")
-
-##saving the upset plot
-upset_plot_feces <-UpSetR::upset(upset.data.bacteria.samples.feces, 
-                                 sets.bar.color = c("#CC79A7", "#009E73"), 
-                                 order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-                                 point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-                                 sets.x.label = "OTU count", 
-                                 set_size.show = F) 
-upset_plot_feces
-
-##saving the upset plot
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8A.svg",
-        width=7, height=6)
-upset_plot_feces
-dev.off()
-
-##CB (cDNA vs. DNA)-Figure 8B#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-upset.data.bacteria.samples.water <- MicrobiotaProcess::get_upset(data.bacteria.samples.water, factorNames="gen_material") 
-upset.data.bacteria.samples.water
-upset.data.bacteria.samples.water <- upset.data.bacteria.samples.water%>%
-  rename("RNA (cDNA)" = "cDNA")
-
-##saving the upset plot
-upset_plot_water <-UpSetR::upset(upset.data.bacteria.samples.water, 
-                                 sets.bar.color = c("#CC79A7", "#009E73"), 
-                                 order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-                                 point.size = 5, line.size = 2, mainbar.y.label= "OTU count",
-                                 sets.x.label = "OTU count", 
-                                 set_size.show = F)
-upset_plot_water
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8B.svg",
-        width=7, height=6)
-upset_plot_water
-dev.off()
 
 
 
@@ -6100,11 +5946,7 @@ sfigure5 <- ggplot(salmonella_ra.melt,
            step.increase = 0.08,
            tip.length = 0.02)
 sfigure5 
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure5.png", 
-       plot = sfigure5, 
-       device = "png", 
-       dpi = 600, 
-       width = 11, height =10)
+
 
 ##TABLE 3 - Average RA of salmonella in sample types #######
 salmonella_ra.melt %>%
@@ -6442,10 +6284,4 @@ figure2 <- plot_grid(dendroRA.Salmonella.species.plot.2,
                      label_size = 22,
                      rel_widths  = c(0.8, 0.2))
 figure2
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure2.png", 
-       plot = figure2, 
-       dpi = 600,
-       device = "png", 
-       width = 20, 
-       height =10,
-       bg = "white")
+
