@@ -4,7 +4,7 @@ This repository contains all of the code required to replicate the analysis in t
 
 Raw sequence reads have been made publically available at NCBI's SRA under the BioProject 
 
-##Table of contents
+##Table of contents##
 ###Bioinformatic_pipeline.md
 Tutorial to obtain taxonomy, ARG, and functional gene count tables.
 ###Feedlot_CatchBasins_Functional_HUMAnN_Analysis
