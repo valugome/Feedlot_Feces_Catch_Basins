@@ -6,7 +6,7 @@ Raw sequence reads have been made publically available at NCBI's SRA under the B
 
 ## Table of contents
 ### Bioinformatic_pipeline.md
-Tutorial to obtain taxonomy, ARG (Antimicrobial Resistance Genes), and functional gene count tables.
+Steps followed to obtain taxonomy, ARG (Antimicrobial Resistance Genes), and functional gene count tables.
 ### Feedlot_CatchBasins_Functional_HUMAnN_Analysis
 R code to generate figures for functional genes and pathways.
 ### Feedlot_CatchBasins_Microbiome_Analysis
