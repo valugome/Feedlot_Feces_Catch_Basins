@@ -17,5 +17,5 @@ R code to generate figures for resistome (pool of ARGs).
 R code to generate figures for ***Salmonella enterica*** serovars.
 ### Feedlot_CatchBasins_Reads_Bioinformatic_Pipeline
 R code for read counts obtained on each step of the bioinformatic pipeline.
-### Feedlot_CatchBasins_SequencingDepth_HostRemoval_Figures:
+### Feedlot_CatchBasins_SequencingDepth_HostRemoval_Figures
 R code to generate figures for Sequencing Depth and Host Removal read counts.
