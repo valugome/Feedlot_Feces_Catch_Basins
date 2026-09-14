@@ -6,13 +6,13 @@ Raw sequence reads have been made publically available at NCBI's SRA under the B
 
 ## Table of contents
 ### Bioinformatic_pipeline.md
-Tutorial to obtain taxonomy, ARG, and functional gene count tables.
+Tutorial to obtain taxonomy, ARG (Antimicrobial Resistance Genes), and functional gene count tables.
 ### Feedlot_CatchBasins_Functional_HUMAnN_Analysis
 R code to generate figures for functional genes and pathways.
 ### Feedlot_CatchBasins_Microbiome_Analysis
 R code to generate figures for microbial taxonomy.
 ### Feedlot_CatchBasins_Resistome_Analysis
-R code to generate figures for resistome (pool of Antimicrobial Resistance Genes).
+R code to generate figures for resistome (pool of ARGs).
 ### Feedlot_CatchBasins_Salmonella_SeroSeq
 R code to generate figures for ***Salmonella enterica*** serovars.
 ### Feedlot_CatchBasins_Reads_Bioinformatic_Pipeline
