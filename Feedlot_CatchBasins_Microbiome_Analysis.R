@@ -6163,13 +6163,14 @@ dendro.bray.plot.Salmonella <- ggplot(data.bacteria.samples.Salmonella.bray.dend
              size = 4, shape = 15, position = position_nudge(y = -0.13)) +
   scale_color_manual(name = "Library Type", values = gen.material.palette,
                      labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)")) +
-  geom_text(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels, aes(x=x, y=y, label = sample_type.abbrv), 
-            colour = "white", size =2, fontface = "bold", position = position_nudge(y = -0.03)) +
+  #Not adding text labels for sample type or genetic material, just feedlot
+  #geom_text(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels, aes(x=x, y=y, label = sample_type.abbrv), 
+  #         colour = "white", size =2, fontface = "bold", position = position_nudge(y = -0.03)) +
   geom_text(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels, 
             aes(x=x, y=y, label = factor(feedlot)), colour = "white", 
             size =3, position = position_nudge(y=-0.08), fontface = "bold")+
-  geom_text(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels, aes(x=x, y=y, label = gen_material.abbrv),
-            colour = "white", size =3, position = position_nudge(y=-0.13), fontface = "bold") +
+  #geom_text(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels, aes(x=x, y=y, label = gen_material.abbrv),
+  #          colour = "white", size =3, position = position_nudge(y=-0.13), fontface = "bold") +
   scale_x_discrete(expand = c(0.03,0,0.03,0)) +
   theme(legend.position = "top",
         legend.direction = "horizontal",
