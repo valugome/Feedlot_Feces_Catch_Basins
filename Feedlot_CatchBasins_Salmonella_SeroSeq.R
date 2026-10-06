@@ -56,7 +56,12 @@ cran_pkgs = c(
   "Polychrome", "colorspace"
 )
 
-load_packages(cran_pkgs)
+#BioConductor
+bioc_pkgs = c(
+  "phyloseq"
+)
+
+load_packages(cran_pkgs,bioc_pkgs)
 
 #Load data####
 ##SEROVARS PROPORTION#####
@@ -154,7 +159,7 @@ serovars_per_sample <- ggplot(serovar_counts, aes(x = serovars_per_sample, y = n
                     labels = c("FECES" = "FECES", "CB" = "CATCH BASINS")) +
   theme_minimal() +
   theme(legend.position  = "inside",
-        legend.position.inside = c(0.8, 0.9),
+        legend.position.inside = c(0.925, 0.89),
         legend.background = element_rect(fill = "white"),
         legend.title = element_blank(),
         legend.text = element_text(size = 16),
@@ -172,8 +177,6 @@ figure1 <- plot_grid(seroseq_serovars.plot,
                      ncol = 1,
                      rel_heights = c(0.75, 0.25))
 figure1
-
-
 
 ##BETADIV OF SALMONELLA SEROVARS####
 #OTU table###
