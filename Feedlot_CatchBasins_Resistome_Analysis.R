@@ -1137,12 +1137,12 @@ alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome <- alpha_div_emmeans_data_AR
 alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome
 
 
-######FIGURE 3B#####
-figure3B <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome+
+######SUPPLEMENTARY FIGURE 6B - ALPHA DIV FOCUS ON SAMPLE TYPE#####
+sfigure6B <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome+
                         theme(plot.title = element_blank()), 
                       labels = c("B"), 
                       label_size = 22)
-figure3B
+sfigure6B
 
 
 
