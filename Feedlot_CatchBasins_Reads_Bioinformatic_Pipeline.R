@@ -338,5 +338,61 @@ stable2 <- final_feedlot_lagoon_stats %>%
     `Host Removal Percentage of Unmerged Reads Removed (%)`,
     `Host Removal Number of Output Unmerged Reads (Total)` 
   )
-stable2
+stable2_individual_stats
+
+#Getting stats per group (DNA feces, cDNA feces, DNA CB, cDNA CB, negative controls, positive mock communities)
+stable2_stats_per_group <- final_feedlot_lagoon_stats %>%
+  mutate(`Library Type` = ifelse(grepl("c", SampleID), "Metatranscriptomic (RNA (cDNA))", "Metagenomic (DNA)"),
+         `Sample Type` = ifelse(grepl("W", SampleID), "Catch Basin", "Feces"),
+         `Control or Sample` = case_when(
+           grepl("Zymo", SampleID) ~ 'Positive Control',
+           grepl("NTC|EB", SampleID) ~ 'Negative Control',
+           grepl("F", SampleID) ~ 'Sample'
+         ),
+         Group = case_when(
+           `Control or Sample` == "Sample" ~ paste(`Sample Type`, `Library Type`, sep = " - "),
+           TRUE ~ `Control or Sample`
+         )) %>%
+  group_by(`Control or Sample`, Group) %>%
+  dplyr::summarise(`N Samples` = n(),
+                   `Trimmmomatic Mean Count of Input Reads (Paired) ± SD` =
+                     paste(round(mean(Trimm_NumberOfInputReads_Paired), 2), "±", round(sd(Trimm_NumberOfInputReads_Paired), 2)),
+                   `Trimmmomatic Mean Percentage of Reads Dropped (%) ± SD` =
+                     paste(round(mean(Trimm_percentage_pairedreads_cut), 2), "±", round(sd(Trimm_percentage_pairedreads_cut), 2)),
+                   `Trimmmomatic Mean Count of Output Reads (Paired) ± SD` =
+                     paste(round(mean(Trimm_total_pairedreads_left), 2), "±", round(sd(Trimm_total_pairedreads_left), 2)),
+                   `SortMeRNA Mean Count of Input Reads (Total) ± SD` =
+                     paste(round(mean(SortMeRNA_input_number_reads, na.rm = T), 2), "±", round(sd(SortMeRNA_input_number_reads, na.rm = T), 2)),
+                   `SortMeRNA Mean Count of Output Reads (Total)` =
+                     paste(round(mean(SortmeRNA_post_number_reads, na.rm = T), 2), "±", round(sd(SortmeRNA_post_number_reads, na.rm = T), 2)),
+                   `SortMeRNA Mean Percentage of Reads Removed (%) ± SD` =
+                     paste(round(mean(SortMeRNA_percentage_removed_reads, na.rm = T), 2), "±", round(sd(SortMeRNA_percentage_removed_reads, na.rm = T), 2)),
+                   `FLASH Mean Count of Input Reads (Total) ± SD` =
+                     paste(round(mean(FLASH_input_number_reads, na.rm = T), 2), "±", round(sd(FLASH_input_number_reads, na.rm = T), 2)),
+                   `FLASH Mean Count of Reads Merged (Total) ± SD` =
+                     paste(round(mean(FLASH_merged_num_seqs, na.rm = T), 2), "±", round(sd(FLASH_merged_num_seqs, na.rm = T), 2)),
+                   `FLASH Mean Percentage of Reads Merged (%) ± SD` =
+                     paste(round(mean(FLASH_percentage_merged_reads, na.rm = T), 2), "±", round(sd(FLASH_percentage_merged_reads, na.rm = T), 2)),
+                   `Mean Length of Merged Reads ± SD` =
+                     paste(round(mean(FLASH_merged_avg_len, na.rm = T), 2), "±", round(sd(FLASH_merged_avg_len, na.rm = T), 2)),
+                   `FLASH Mean Count of Reads Unmerged (Total) ± SD` =
+                     paste(round(mean(FLASH_unmerged_num_seqs, na.rm = T), 2), "±", round(sd(FLASH_unmerged_num_seqs, na.rm = T), 2)),
+                   `FLASH Mean Percentage of Reads Unmerged (%) ± SD` =
+                     paste(round(mean(FLASH_percentage_unmerged_reads, na.rm = T), 2), "±", round(sd(FLASH_percentage_unmerged_reads, na.rm = T), 2)),
+                   `Mean Length of Unmerged Reads ± SD` =
+                     paste(round(mean(FLASH_unmerged_avg_len, na.rm = T), 2), "±", round(sd(FLASH_unmerged_avg_len, na.rm = T), 2)),
+                   `Host Removal Mean Count of Input Merged + Unmerged Reads (Total) ± SD` =
+                     paste(round(mean(Hostrem_input_total_num_seqs, na.rm = T), 2), "±", round(sd(Hostrem_input_total_num_seqs, na.rm = T), 2)),
+                   `Host Removal Mean Percentage of Merged + Unmerged Reads Removed (%) ± SD` =
+                     paste(round(mean(Hostrem_percentage_total_seqs_removed, na.rm = T), 2), "±", round(sd(Hostrem_percentage_total_seqs_removed, na.rm = T), 2)),
+                   `Host Removal Mean Count of Output Merged + Unmerged Reads (Total) ± SD` =
+                     paste(round(mean(Hostrem_output_total_num_seqs, na.rm = T), 2), "±", round(sd(Hostrem_output_total_num_seqs, na.rm = T), 2)),
+                   .groups = "drop"
+  ) %>%
+  arrange(`Control or Sample`, Group) %>%
+  select(-`Control or Sample`)
+
+stable2_stats_per_group
+  
+
   
