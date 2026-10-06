@@ -6278,12 +6278,13 @@ dendroRA.Salmonella.species.plot.2 <- plot_grid(dendro.bray.plot.Salmonella ,
 dendroRA.Salmonella.species.plot.2
 
 ####FIGURE 2#####
-figure2 <- plot_grid(dendroRA.Salmonella.species.plot.2, 
-                     WaterandFeces.DNA_salmonella_only_BC_beta_div, 
-                     align = "v", 
+figure2 <- plot_grid(dendroRA.Salmonella.species.plot.2,
+                     NULL,
+                     WaterandFeces.DNA_salmonella_only_BC_beta_div,
+                     align = "v",
                      nrow = 1,
-                     labels = c("A", ""),
+                     labels = c("A", "", ""),
                      label_size = 22,
-                     rel_widths  = c(0.8, 0.2))
+                     rel_widths = c(0.77, -0.01, 0.23))
 figure2
 
