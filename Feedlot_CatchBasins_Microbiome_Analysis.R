@@ -3163,6 +3163,8 @@ feces.DNA_salmonella_only_BC_beta_div <- ggplot(data.bacteria.samples.feces.DNA.
   geom_point(aes(x=cMDS1, y= cMDS2, colour = salmonella_culture_status), size = 10) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2, label= salmonella_stat.abbrv), colour= "white", size = 5, fontface = "bold") +
   scale_color_manual(values= salmonella.palette)+
+  scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
+  scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
         legend.title = element_text(face = "bold", size = 22),
         legend.text = element_text(colour = "black", size = 22),
