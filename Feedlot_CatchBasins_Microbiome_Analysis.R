@@ -1753,12 +1753,12 @@ alpha_div_emmeans_WvsF_DNAandcDNA_feedlot <- alpha_div_emmeans_data_WvsF_cDNAand
            hide.ns = T) 
 alpha_div_emmeans_WvsF_DNAandcDNA_feedlot
 
-######FIGURE 3A - FOCUS ON SAMPLE TYPE#####
-figure3A <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot+
+######SUPPLEMENTARY FIGURE 6A - ALPHA DIV FOCUS ON SAMPLE TYPE#####
+sfigure6A <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot+
                         theme(plot.title = element_blank()), 
                       labels = c("A"), 
                       label_size = 22)
-figure3A
+sfigure6A
 
 
 #####DNA vs cDNA facet by Feces and Water#####
