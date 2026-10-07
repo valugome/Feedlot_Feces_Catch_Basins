@@ -4003,8 +4003,8 @@ data.bacteria.samples.family.filt.melt <- psmelt(data.bacteria.samples.family.fi
                         ))) ##Factoring the Family column so that "Others.." is the last category, also factoring families by Order
 levels(data.bacteria.samples.family.filt.melt$Family)
 
-##Apply the function to obtain top orders (n=10)
-top_families <- top_taxa_legend(data.bacteria.samples.family.filt.melt , taxlevel = "Family", n = 25)
+##Apply the function to obtain top families (n=10)
+top_families <- top_taxa_legend(data.bacteria.samples.family.filt.melt , taxlevel = "Family", n = 10)
 top_families
 
 ##Making the color palette for family
