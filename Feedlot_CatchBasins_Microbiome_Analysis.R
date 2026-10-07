@@ -1871,13 +1871,12 @@ alpha_div_emmeans_cDNAvsDNA_WandF_feedlot <-
 alpha_div_emmeans_cDNAvsDNA_WandF_feedlot
 
 
-######FIGURE 6A - FOCUS ON LIBRARY TYPE#####
-figure6A <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot+
+######SUPPLEMENTARY FIGURE 7 - ALPHA DIV FOCUS ON LIBRARY TYPE#####
+sfigure7A <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot+
                         theme(plot.title = element_blank()), 
                       labels = c("A"), 
                       label_size = 22)
-figure6A
-
+sfigure7A
 
 
 ## BOX PLOTS ALPHA DIV ######
