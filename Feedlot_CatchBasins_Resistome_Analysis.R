@@ -1252,8 +1252,8 @@ alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome <-
 alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome
 
 
-######FIGURE 6B - FOCUS ON LIBRARY TYPE#####
-figure6B <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome+
+######SUPPLEMENTARY FIGURE 7B - ALPHA DIV FOCUS ON LIBRARY TYPE#####
+sfigure7B <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome+
                         theme(plot.title = element_blank()), 
                       labels = c("B"), 
                       label_size = 22)
