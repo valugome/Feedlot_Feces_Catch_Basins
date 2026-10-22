@@ -51,7 +51,7 @@ cran_pkgs = c(
   "tidyverse", "ggplot2", "ggtern", "stringr", "dplyr", "vegan", "cowplot",
   "ggdendro", "randomcoloR", "ggpubr", "ggsignif", "UpSetR",
   "ggtext", "ggnewscale", "rstatix", "ggrepel", "ggh4x", "svglite",
-  "writexl", "paletteer", "lme4", "lmerTest", "car", "emmeans",
+  "paletteer", "lme4", "lmerTest", "car", "emmeans",
   "Polychrome", "colorspace", "devtools", "remotes"
 )
 #BioConductor
@@ -427,8 +427,6 @@ top_species_zymo
 
 #####SUPPLEMENTARY TABLE 4####
 stable4 <- top_genus_zymo
-write_xlsx(stable4, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable4.xlsx")
 
 #####SUPPLEMENTARY FIGURE 4######
 sfigure4 <- data.zymos.bacteria.fungi.ra.genus.plot
@@ -890,10 +888,6 @@ Classified_phylum_abundance <- data.bacteria.samples_phylum.ra %>%
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_phylum_abundance ##89.9% abundance by Classified Phyla
 
-##Checking on excel
-write.csv(data.bacteria.samples_phylum.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/phylum_otus.csv")
-write.csv(data.bacteria.samples_phylum.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/phylum_taxa.csv")  
-
 #How many unclassified?
 data.bacteria.samples_phylum.unclassified.ra <- prune_taxa(
   grepl("unclassified", phyloseq::tax_table(data.bacteria.samples_phylum.ra)[, "Phylum"]),
@@ -941,11 +935,6 @@ Classified_class_abundance <- data.bacteria.samples_class.ra %>%
   summarize(OTU_Abundance = mean(Abundance, .groups = "drop")) %>%  # Mean abundance per OTU
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_class_abundance ##86.1% Abundance by Classified classes
-
-##Checking on excel
-write.csv(data.bacteria.samples_class.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/class_otus.csv")
-write.csv(data.bacteria.samples_class.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/class_taxa.csv") 
-
 
 #How many unclassified?
 data.bacteria.samples_class.unclassified.ra <- prune_taxa(
@@ -997,10 +986,6 @@ Classified_order_abundance <- data.bacteria.samples_order.ra %>%
   summarize(OTU_Abundance = mean(Abundance, .groups = "drop")) %>%  # Mean abundance per OTU
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_order_abundance ##82.1% abundance by Classified orders
-
-#Checking on excel
-write.csv(data.bacteria.samples_order.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/order_otus.csv")
-write.csv(data.bacteria.samples_order.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/order_taxa.csv") 
 
 #How many unclassified?
 data.bacteria.samples_order.unclassified.ra <- prune_taxa(
@@ -1056,10 +1041,6 @@ Classified_family_abundance <- data.bacteria.samples_family.ra %>%
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_family_abundance ##75.4% abundance by Classified Families
 
-#Checking on excel
-write.csv(data.bacteria.samples_family.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/family_otus.csv")
-write.csv(data.bacteria.samples_family.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/family_taxa.csv") 
-
 #How many unclassified?
 data.bacteria.samples_family.unclassified.ra <- prune_taxa(
   grepl("unclassified", phyloseq::tax_table(data.bacteria.samples_family.ra)[, "Family"]),
@@ -1113,10 +1094,6 @@ Classified_genus_abundance <- data.bacteria.samples_genus.ra %>%
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_genus_abundance ##66.0% abundance by Classified Genera
 
-#Checking on excel
-write.csv(data.bacteria.samples_genus.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/genus_otus.csv")
-write.csv(data.bacteria.samples_genus.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/genus_taxa.csv") 
-
 #How many unclassified?
 data.bacteria.samples_genus.unclassified.ra <- prune_taxa(
   grepl("unclassified", phyloseq::tax_table(data.bacteria.samples_genus.ra)[, "Genus"]),
@@ -1164,10 +1141,6 @@ Classified_species_abundance <- data.bacteria.samples_species.ra %>%
   summarize(OTU_Abundance = mean(Abundance, .groups = "drop")) %>%  # Mean abundance per OTU
   summarize(Classified_sum = sum(OTU_Abundance))   # Sum across OTUs
 Classified_species_abundance ##71.1% Abundance by Classified Species
-
-#Checking on excel
-write.csv(data.bacteria.samples_species.ra@otu_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/species_otus.csv")
-write.csv(data.bacteria.samples_species.ra@tax_table, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/species_taxa.csv") 
 
 #How many unclassified?
 data.bacteria.samples_species.unclassified.ra <- prune_taxa(
@@ -1303,8 +1276,6 @@ stable3 <- classified_unknown_table%>%
          `Percentage of Classified Taxa`
          )
 stable3
-write_xlsx(stable3, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable3.xlsx")
 
 #ALPHA DIVERSITY ######
 ##OTU LEVEL#####
@@ -1487,7 +1458,6 @@ alpha_div_anovaIII_microbiome <- bind_rows(richness_anovaIII,
 #####SUPPLEMENTARY TABLE 6_1######
 stable6.1 <- alpha_div_anovaIII_microbiome%>%
   select(Dataset, Metric, `Fixed Effects`, `F`, Df, `Pr(>F)`)
-write_xlsx(stable6.1, "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable6_1.xlsx")
 
 ###EMMEANS TABLES#######
 ####RICHNESS####
@@ -1584,8 +1554,6 @@ alpha_div_emmeans_microbiome
 
 #####SUPPLEMENTARY TABLE 7_1 ###### 
 stable7.1 <- alpha_div_emmeans_microbiome
-write_xlsx(stable7.1, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable7_1.xlsx")
 
 
 ###EMMEANS PLOTS######
@@ -3586,8 +3554,6 @@ stable5_microbiome <- bind_rows(stable5.1,
                                 stable5.8)%>%
   select(Dataset, `Library Type`, `Sample Type`, `Fixed Effect`, Df, SumOfSqs, R2, `F`, `Pr(>F)`)
 stable5_microbiome 
-write_xlsx(stable5_microbiome, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable5_1.xlsx")
 
 #RELATIVE ABUNDANCE AND DENDROGRAMS#####
 ##All samples####
@@ -3734,8 +3700,6 @@ most_abun_phyla <- data.bacteria.samples.phylum.filt.melt %>%
 stable8.1 <- most_abun_phyla%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)")%>%
   select(Dataset, `Library Type`, `Sample Type`, `Mean Relative Abundance (%) ± SD`, everything())
-write_xlsx(stable8.1,
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable8_1.xlsx")
 
 ##Create color palette
 set.seed(87)
@@ -4060,8 +4024,6 @@ most_abun_families
 stable9.1 <- most_abun_families%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)")%>%
   select(Dataset, `Library Type`, `Sample Type`, `Mean Relative Abundance (%) ± SD`, everything()) 
-write_xlsx(stable9.1, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable9_1.xlsx")
 
 ###FIGURE 3 - FECES VS WATER - FAMILY LEVEL#####
 #Want to add these on the side of the dendrogram
