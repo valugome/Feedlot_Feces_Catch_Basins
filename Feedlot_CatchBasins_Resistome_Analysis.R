@@ -213,12 +213,16 @@ sort(Percentage_reads_aligned_metadata$Percentage_reads_aligned) ##NOT DROPPING 
 Percentage_reads_aligned_metadata %>%
   group_by(sample_type, gen_material)%>%
   summarise(mean_percentage_aligned_reads = mean(Percentage_reads_aligned),
-            sd_percentage_aligned_reads = sd(Percentage_reads_aligned))
-# sample_type gen_material mean_percentage_aligned_reads sd_percentage_aligned_reads
-# Feces       DNA                                 0.145                       0.0234
-# Feces       cDNA                                0.108                       0.0293
-# Water       DNA                                 0.0450                      0.0152
-# Water       cDNA                                0.0392                      0.0177
+            sd_percentage_aligned_reads = sd(Percentage_reads_aligned),
+            min_percentage_aligned_reads = min(Percentage_reads_aligned), 
+            max_percentage_aligned_reads = max(Percentage_reads_aligned)
+            )
+# sample_type gen_material mean_percentage_aligned_reads sd_percentage_aligned_reads min_percentage_aligned_reads max_percentage_aligned_reads
+# Feces       DNA                                0.145                  0.0234                 0.115                  0.245 
+# Feces       cDNA                               0.108                  0.0293                 0.0400                 0.189 
+# Water       DNA                                0.0450                 0.0152                 0.0182                 0.0784
+# Water       cDNA                               0.0392                 0.0177                 0.0191                 0.0783
+
 
 ##Plots ####
 ###cDNA vs DNA faceted by Water and CB- SIGNIFICANT ####
@@ -275,7 +279,7 @@ wilcox_test(water.Percentage_reads_aligned_metadata%>%arrange(SampleID),
             paired = T
             ) #n.s., p = 0.0342
 
-###CB vs Feces faceted by cDNA and DNA - Significant #####
+###CB vs Feces faceted by cDNA and DNA - SIGNIFICANT#####
 percent_alignedreads_ARG_WvF.cDNAandDNA<- ggplot(Percentage_reads_aligned_metadata, 
                                                  aes(x = sample_type, 
                                                      y= Percentage_reads_aligned, 
@@ -400,22 +404,6 @@ percent_alignedreads_ARG_batches
 
 #Checking Stats
 wilcox_test(Percentage_reads_aligned_metadata, Percentage_reads_aligned~re_sequenced) #S (p = 0.0336)
-
-###SUPPLEMENTARY FIGURE?- PERCENTAGE ALIGNED READS####
-percent_alignedreads_ARG_WvF.cDNAandDNA
-percent_alignedreads_ARG.cDNAvsDNA.WaF
-
-sfigureX <- plot_grid(percent_alignedreads_ARG_WvF.cDNAandDNA + 
-                         theme(axis.title.y = element_text(size = 19)),
-                        percent_alignedreads_ARG.cDNAvsDNA.WaF+ 
-                         theme(axis.title.y = element_text(size = 19)), 
-                       align = "v",
-                       ncol = 1,
-                       labels = "AUTO",
-                       label_size = 22)
-  #labs(title = "NON-HOST READ ALIGNMENT TO MEGARes")+
-  #theme(plot.title = element_text(size = 30, face = "bold"))
-sfigureX
 
 
 
@@ -1145,7 +1133,6 @@ sfigure6B <- plot_grid(alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome+
 sfigure6B
 
 
-
 #####DNA vs cDNA facetted by Feces and CB#####
 alpha_div_emmeans_cDNAvsDNA_WandF_resistome <- alpha_div_emmeans_data %>%
   ggplot(aes(x = gen_material, y = yvar, color = gen_material)) +
@@ -1257,8 +1244,6 @@ sfigure7B <- plot_grid(alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome+
                         theme(plot.title = element_blank()), 
                       labels = c("B"), 
                       label_size = 22)
-
-
 
 ##BOX PLOTS ALPHA DIV ######
 ###Feces vs CB faceted by cDNA and DNA#####
@@ -1484,7 +1469,6 @@ pvalue_cDNA_adonis_sample_type<-  cDNA_BC_adonis_sampletype_feedlot$`Pr(>F)`[1]
 
 #####PLOT #####
 cDNA_BC_beta_div_spider_sampletype <- ggplot(data2_ARG.cDNA.tss.bray.segs.sample_type)+
-                                               #filter(!SampleID %in% c("F2F02c", "F4W01c", "F4W02c"))) + 
   theme_bw() +
   labs(x="NMDS1", y="NMDS2", title= "Metatranscriptomic libraries (RNA (cDNA))", color = "Sample type") +
   geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
@@ -1492,8 +1476,8 @@ cDNA_BC_beta_div_spider_sampletype <- ggplot(data2_ARG.cDNA.tss.bray.segs.sample
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
+  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
   scale_color_manual(values = sample.type.palette,
                      labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -1505,17 +1489,17 @@ cDNA_BC_beta_div_spider_sampletype <- ggplot(data2_ARG.cDNA.tss.bray.segs.sample
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color= guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = -2.2, y = 0.55, ##change coordinates as needed
+  annotate("text", x = -0.5, y = 0.55, ##change coordinates as needed
            label = "Sample type",
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = -2.2, y = 0.55, ##change coordinates as needed
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable
+  annotate("text", x = -0.5, y = 0.55, ##change coordinates as needed
            label = paste0("R² = ", round(R2_cDNA_adonis_sample_type * 100, 1), "%",
                           "\np = ", round(pvalue_cDNA_adonis_sample_type, 4)),
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 cDNA_BC_beta_div_spider_sampletype
 
 ####FEEDLOT EFFECT#######
@@ -1666,8 +1650,8 @@ DNA_BC_beta_div_spider_sampletype <- ggplot(data2_ARG.DNA.tss.bray.segs.sample_t
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
+  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
   scale_color_manual(values = sample.type.palette,
                      labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -1679,17 +1663,17 @@ DNA_BC_beta_div_spider_sampletype <- ggplot(data2_ARG.DNA.tss.bray.segs.sample_t
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color= guide_legend(override.aes = list(size = 7)))+
   annotate("text", x= 0.1, y = 0.2, ##change coordinates as needed
            label = "Sample type",
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable
   annotate("text", x= 0.1, y = 0.2, ##change coordinates as needed
            label = paste0("R² = ", round(R2_DNA_adonis_sample_type * 100, 1), "%",
                           "\np = ", round(pvalue_DNA_adonis_sample_type, 4)),
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 DNA_BC_beta_div_spider_sampletype
 
 ####FEEDLOT EFFECT#######
@@ -1908,31 +1892,33 @@ water_genmat_BC_beta_div <- ggplot(data2_ARG.water.genmat.tss.bray.segs) + theme
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 3, fontface = "bold") +
+  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
+  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
                      labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+  scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
+  scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
+        legend.title = element_text(colour = "black", size = 22, face = "bold"),
         legend.text = element_text(colour = "black", size = 22),
         plot.title = element_text(size = 36),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color = guide_legend (override.aes = list(size = 7))
   )+
   annotate("text", x = 0.5, y = 0.55, ##change coordinates as needed
            label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
   annotate("text", x = 0.5, y = 0.55, ##change coordinates as needed
            label = paste("R² = ", round(R2_water_BC_adonis_gen_material * 100, 1), "%",
                          "\np = ", round(pvalue_water_BC_adonis_gen_material, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 water_genmat_BC_beta_div 
 
 ###ONLY FECES#######
@@ -2094,36 +2080,38 @@ feces_genmat_BC_beta_div <- ggplot(data2_ARG.feces.genmat.tss.bray.segs) + theme
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2, label= gen_material_plot), colour= "white", size = 3, fontface = "bold") +
+  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
+  geom_text(aes (x= cMDS1, y = cMDS2, label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
                      labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+  scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
+  scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
+        legend.title = element_text(colour = "black", size = 22, face = "bold"),
         legend.text = element_text(colour = "black", size = 22),
         plot.title = element_text(size = 36),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color = guide_legend (override.aes = list(size = 7))
   )+
   annotate("text", x = 0.8, y = -0.35, ##change coordinates as needed
            label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
   annotate("text", x = 0.8, y = -0.35, ##change coordinates as needed
            label = paste("R² = ", round(R2_feces_BC_adonis_gen_material * 100, 1), "%",
                          "\np = ", round(pvalue_feces_BC_adonis_gen_material, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 feces_genmat_BC_beta_div 
 
-####SUPPLEMENTARY FIGURE 6CD#######
+####SUPPLEMENTARY FIGURE 10CD#######
 #####Effect of feedlot On DNA and cDNA#####
-sfigure6CandD <- ggarrange(DNA_BC_beta_div_spider_feedlot+
+sfigure10CandD <- ggarrange(DNA_BC_beta_div_spider_feedlot+
                              theme(plot.title = element_blank()), 
                            cDNA_BC_beta_div_spider_feedlot+
                              theme(plot.title = element_blank()),
@@ -2133,12 +2121,12 @@ sfigure6CandD <- ggarrange(DNA_BC_beta_div_spider_feedlot+
                            common.legend = T)
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-sfigure6CandD
+sfigure10CandD
 
 
-####SUPPLEMENTARY FIGURE 7CD#######
+####SUPPLEMENTARY FIGURE 11CD#######
 #####Effect of feedlot On Feces and CB#####
-sfigure7CandD <- ggarrange(feces_feedlot_BC_beta_div+
+sfigure11CandD <- ggarrange(feces_feedlot_BC_beta_div+
                              theme(plot.title = element_blank()), 
                            water_feedlot_BC_beta_div+
                              theme(plot.title = element_blank()),
@@ -2146,9 +2134,8 @@ sfigure7CandD <- ggarrange(feces_feedlot_BC_beta_div+
                            font.label = list(size = 22),
                            legend = "none",
                            common.legend = T)
-  # labs(title = "RESISTOME")+
-  # theme(plot.title = element_text(size = 40, face = "bold"))
-sfigure7CandD
+
+sfigure11CandD
 
 
 ###SUPPLEMENTARY TABLE 5- RESISTOME SECTION#######
@@ -2182,62 +2169,78 @@ dendro.bray.ARG.plot <- ggplot(data2_ARG.bray.dendro.data$segments) +
   geom_segment(aes(x=x,y=y,xend=xend,yend=yend)) +
   #Sample type
   geom_point(data = data2_ARG.bray.dendro.data$labels, 
-             aes(x = x, y = y, colour = sample_type),size = 5, shape = 15, 
-             position = position_nudge(y = -0.2))+
-  scale_color_manual(name = "Sample Type", values = sample.type.palette,
-                     label = c("Feces" = "Feces", "Water" = "Catch Basins")) +
-  guides(color=guide_legend(title.position="top"))+
+             aes(x = x, y = y, colour = sample_type),size = 3.8, shape = 15, 
+             position = position_nudge(y = 0.1))+
+  scale_color_manual(name = "Sample Type", 
+                     values = sample.type.palette,
+                     label = c("Feces" = "Feces", "Water" = "Catch Basins")
+  ) +
+  guides(color=guide_legend(title.position="top", 
+                            override.aes = list(size = 7)))+
   new_scale_color()+ 
   #Feedlots
   geom_point(
     data = data2_ARG.bray.dendro.data$labels, 
-    aes(x = x, y = y, colour = factor(feedlot)),size = 5, shape = 15, 
-    position = position_nudge(y = -0.5))+
-  scale_color_manual(name = "Feedlot", values = feedlot_palette) +
-  guides(color=guide_legend(title.position="top"))+
+    aes(x = x, y = y, colour = factor(feedlot)),size = 3.8, shape = 15, 
+    position = position_nudge(y = 0.3))+
+  scale_color_manual(name = "Feedlot", 
+                     values = feedlot_palette) +
+  guides(color=guide_legend(title.position="top", 
+                            override.aes = list(size = 7)))+
   new_scale_color()+
-  #Nucleic acid
+  #Library Type
   geom_point(data = data2_ARG.bray.dendro.data$labels,  
              aes(x = x, y = y, color = gen_material),
-             size = 5, shape = 15, 
-             position = position_nudge(y = -0.8)) +
-  guides(color=guide_legend(title.position="top"))+
-  scale_color_manual(name = "Library Type",values = gen.material.palette,  
-                     label = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)")) +
-  #Sample type
-  geom_text(data = data2_ARG.bray.dendro.data$labels, 
-            aes(x=x, y=y, label = sample_type.abbrv), 
-            colour = "white", size =3, 
-            position = position_nudge(y=-0.2), 
-            fontface = "bold")+
-  #Feedlot
-  geom_text(data = data2_ARG.bray.dendro.data$labels, 
-            aes(x=x, y=y, label = factor(feedlot)), 
-            colour = "white", size =4, 
-            position = position_nudge(y=-0.5), fontface = "bold") +
-  #Library Type
-  geom_text(data = data2_ARG.bray.dendro.data$labels, 
-            aes(x=x, y=y, label = gen_material.abbrv), 
-            colour = "white", size =4, 
-            position = position_nudge(y=-0.8), fontface = "bold") +
+             size = 3.8, shape = 15, 
+             position = position_nudge(y = 0.5)) +
+  scale_color_manual(
+    name = "Library Type", 
+    values = gen.material.palette,
+    label = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)")
+  ) +
+  guides(color=guide_legend(title.position="top", 
+                            override.aes = list(size = 7)))+
+  # #Feedlot
+  # geom_text(data = data2_ARG.bray.dendro.data$labels, 
+  #           aes(x=x, y=y, label = factor(feedlot)), 
+  #           colour = "white", size =4, 
+  #           position = position_nudge(y=0.3), fontface = "bold") + 
+  # #Sample type
+  # geom_text(data = data2_ARG.bray.dendro.data$labels, 
+  #           aes(x=x, y=y, label = sample_type.abbrv), 
+  #           colour = "white", size =3, 
+  #           position = position_nudge(y=-0.2), 
+  #           fontface = "bold")+
+  # #Library Type
+  # geom_text(data = data2_ARG.bray.dendro.data$labels, 
+  #           aes(x=x, y=y, label = gen_material.abbrv), 
+  #           colour = "white", size =4, 
+  #           position = position_nudge(y=-0.8), fontface = "bold") +
   scale_x_discrete(expand = c(0.03,0,0.03,0)) +
-  theme(legend.position = "top",
-        legend.direction = "horizontal",
-        legend.title = element_text(face = "bold", size = 24),
-        legend.text = element_text(size = 25),
-        plot.title = element_text(size = 36),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        axis.line.y = element_line(size = 0.7, colour = "black"),
-        axis.ticks.y = element_line(size = 0.75, colour = "black"),
-        axis.title.y = element_text(size = 25),
-        axis.text.y = element_text(size = 20, colour = "black"),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank())
+  #Flip it to be vertical
+  coord_flip()+
+  scale_y_reverse()+
+  theme(
+    legend.position = c(0.26,0.15),
+    #legend.position = "top",
+    legend.direction = "vertical",
+    #legend.box.just = "right",
+    #legend.box.margin = margin(r = -250, unit = "pt"),
+    legend.title = element_text(face = "bold", size = 24),
+    legend.text = element_text(size = 20),
+    plot.title = element_text(size = 36),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.line.x = element_line(size = 0.7, colour = "black"),
+    axis.ticks.x = element_line(size = 0.75, colour = "black"),
+    axis.title.x = element_text(size = 25),
+    axis.text.x = element_text(size = 20, colour = "black"),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank())
 dendro.bray.ARG.plot
-
+  
 ##RA PLOT - TYPE####
 dendro_bray_data2_ARG_order <- data2_ARG.bray.dendro.data$labels$label
 data2_ARG.tss.type.melt<- psmelt(data2_ARG.tss.type)
@@ -2366,46 +2369,6 @@ dendroRA.ARG.class.plot.2 <- plot_grid(dendro.bray.ARG.plot,
 dendroRA.ARG.class.plot.2
 
 
-###FIGURE 4D-E-F - FECES VS CB EMPHASIS#####
-#Want to add these on the side of the dendrogram
-cDNA_BC_beta_div_spider_sampletype
-DNA_BC_beta_div_spider_sampletype
-
-#cDNA and DNA
-cDNAandDNA_BC_beta_div_spider_sampletype <- ggarrange(
-  DNA_BC_beta_div_spider_sampletype + 
-    theme(      
-      # plot.title = element_text(size = 35),
-      plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
-  cDNA_BC_beta_div_spider_sampletype +
-    theme(    
-      # plot.title = element_text(size = 35),
-      plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
-  align = "h",
-  nrow = 1,
-  common.legend = TRUE,
-  labels = c("D", "E"),
-  font.label = list(size = 30),
-  legend = "none"
-)
-cDNAandDNA_BC_beta_div_spider_sampletype
-
-##DNA and cDNA ordination plots, on top of dendrogram at the phylum level - Figure 5B&C
-figure4DEF <- plot_grid(cDNAandDNA_BC_beta_div_spider_sampletype, 
-                          dendroRA.ARG.class.plot.2, 
-                      align = "v", 
-                      ncol = 1,
-                      labels = c(" ", "F"),
-                      label_size = 30,
-                      rel_heights = c(0.25, 0.75))
-  # labs(title = "RESISTOME")+
-  # theme(plot.title = element_text(size = 30, face = "bold"))
-figure4DEF
-
-
-
 ##RA PLOT - MECHANISM####
 data2_ARG.mechanism.filt <- merge_low_abundance_ARG_ra(data2_ARG.tss.mechanism, 
                                                        variable = "sample_type", 
@@ -2473,10 +2436,6 @@ most_abun_mechanism <- data2_ARG_mechanism.filt.melt %>%
   select(-c("gen_material", "sample_type", "mean_relative_abundance", "sd"))
 most_abun_mechanism
 
-# .groups = "drop_last"
-# Drops the last level of grouping (default).
-# If you grouped by sample_type and Phylum,
-# the result will stay grouped by sample_type.
 
 ##Apply the function to obtain top mechanisms (n=15)
 top_mechanisms <- top_taxa_legend(data2_ARG_mechanism.filt.melt, 
@@ -2606,72 +2565,105 @@ group.filt.palette <- setNames(
 group.filt.palette
 
 #PLOT
+#Vertical version
 dendroRA.ARG.group.plot <- ggplot(data2_ARG_group.filt.melt, aes(x=Sample, y= Abundance, fill = Group)) +
   theme_minimal() +
   labs(y= "Relative Abundance (%)") +
   geom_bar(stat = "summary", colour = "black") +
-  scale_y_continuous(expand = c(0.0015,0,0.0015,0)) +
+  scale_y_continuous(transform = "reverse", expand = c(0.0015,0,0.0015,0)) +
   scale_x_discrete(limits = dendro_bray_data2_ARG_order, expand = c(0.03,0,0.03,0)) +
   scale_fill_manual(values = group.filt.palette)+
-  guides(fill = guide_legend(title.position="top", nrow = 3, keywidth = 1, keyheight = 1))+
-  theme(legend.position = "bottom",
-        legend.title = element_text(face = "bold", size = 22),
-        legend.text = element_text(size = 22),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.grid.major.x = element_blank(),
-        axis.line.y = element_line(linewidth = 0.7, colour = "black"),
-        axis.ticks.y = element_line(colour = "black", linewidth = 0.75),
-        axis.title.y = element_text(size = 28),
-        axis.text.y = element_text(size = 20, colour = "black"),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank()) 
+  coord_flip()+
+  theme(
+    legend.position = 'bottom',
+    legend.justification = "left",
+    legend.box.margin = margin(l = -290, t = -15, unit = "pt"),
+    legend.title = element_text(face = "bold", size = 24),
+    legend.text = element_text(size = 20),
+    plot.background = element_rect(fill = NA, colour = NA),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.line.x = element_line(linewidth = 0.7, colour = "black"),
+    axis.ticks.x = element_line(colour = "black", linewidth = 0.75),
+    axis.title.x = element_text(size = 25),
+    axis.text.x = element_text(size = 18, colour = "black"),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank()) +
+  guides(fill = guide_legend(title.position="top", 
+                             nrow = 9, 
+                             keywidth = 0.8, keyheight = 0.8))
 dendroRA.ARG.group.plot
 
 #RA with dendrogram
 dendroRA.ARG.group.plot.2 <- plot_grid(dendro.bray.ARG.plot, 
                                        dendroRA.ARG.group.plot, 
-                                       align = "v", 
-                                       ncol = 1,
-                                       rel_heights = c(0.35, 0.65))
+                                       align = "h", 
+                                       nrow = 1,
+                                       rel_widths = c(0.4, 0.6))
 dendroRA.ARG.group.plot.2
 
+###FIGURE 4ABC - FECES VS CB EMPHASIS#####
+#Want to add these on the side of the dendrogram
+cDNA_BC_beta_div_spider_sampletype
+DNA_BC_beta_div_spider_sampletype
 
-###FIGURE 7DEF - EMPHASIS ON NUCLEIC ACID #######
+#cDNA and DNA
+cDNAandDNA_BC_beta_div_spider_sampletype <- ggarrange(
+  DNA_BC_beta_div_spider_sampletype + 
+    theme(
+      plot.title = element_blank(),
+      axis.title = element_text(size = 30)),
+  cDNA_BC_beta_div_spider_sampletype +
+    theme(
+      plot.title = element_blank(),
+      axis.title = element_text(size = 30)),
+  align = "v",
+  ncol= 1,
+  common.legend = TRUE,
+  labels = c("B", "C"),
+  font.label = list(size = 40),
+  legend = "none"
+)
+cDNAandDNA_BC_beta_div_spider_sampletype
+
+##DNA and cDNA ordination plots, next to dendrogram at the group level
+figure4ABC <- 
+  plot_grid(dendroRA.ARG.group.plot.2, 
+            cDNAandDNA_BC_beta_div_spider_sampletype,
+            nrow = 1,
+            labels = c("A", " ", " "),
+            label_size = 40,
+            rel_heights = c(0.25, 0.75)
+  )
+figure4ABC
+
+
+###FIGURE 6CD - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
 water_genmat_BC_beta_div 
 feces_genmat_BC_beta_div 
 
+#Put them together
 WaterandFeces_ARG_beta_div_spider_genmat <- ggarrange(
   feces_genmat_BC_beta_div + 
     theme(
-      # plot.title = element_text(size = 35),
       plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
+      axis.title = element_text(size = 30)),
   water_genmat_BC_beta_div + 
     theme(
-      # plot.title = element_text(size = 35),
       plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
+      axis.title = element_text(size = 30)),
   align = "h",
   nrow = 1,
   common.legend = TRUE,
-  labels = c("D", "E"),
-  font.label = list(size = 30),
+  labels = c("C", "D"),
+  font.label = list(size = 35),
   legend = "none"
 )
 WaterandFeces_ARG_beta_div_spider_genmat
-
-##Add to dendrogram
-figure7DEF <- plot_grid(WaterandFeces_ARG_beta_div_spider_genmat, 
-                           dendroRA.ARG.group.plot.2,
-                        align = "v", 
-                        ncol = 1,
-                        labels = c(" ", "F"),
-                        label_size = 30,
-                        rel_heights = c(0.25, 0.75))
-  # labs(title = "RESISTOME")+
-  # theme(plot.title = element_text(size = 30, face = "bold"))
-figure7DEF
+figure6CD <- WaterandFeces_ARG_beta_div_spider_genmat
+  
+#Save figure
 
 
 
@@ -2889,7 +2881,8 @@ DA_feces_plot_together <- bind_rows(DA_feces_plot_MaAslinANCOM.data, feces.group
 DA_feces_plot_together$plot <- factor(DA_feces_plot_together$plot, levels = c("Log2 Fold change with 95%CI", "log(Bias-corrected abundances)", 'log2(Relative abundances)'))
 DA_feces_plot_together$gen_material <- factor(DA_feces_plot_together$gen_material, levels = c("DNA", "cDNA"))
 
-###PLOTTING DA#
+####Plotting Differential Abundance#######
+#####All DA Groups#######
 ##Ordering how I want the "group" taxlevel to show up on the plot 
 input_taxonomy_feces ##dataframe object for Taxonomy of feces AMR gene groups 
 
@@ -2988,15 +2981,7 @@ DA_feces_plot_MaAslinANCOM <-
         panel.grid.minor = element_blank())
 DA_feces_plot_MaAslinANCOM
 
-##Adding the q values
-DA_feces_plot_MaAslinANCOM_q <- DA_feces_plot_MaAslinANCOM +
-  geom_text(inherit.aes=FALSE,
-            data = DA_feces_plot_together %>% filter(plot == 'Log2 Fold change with 95%CI'),
-            aes(x = Group, y = coef, label = DA),
-            position = position_dodge2(width = 0.75),
-            vjust = -0.6, size = 3)
-
-##Putting together DA plot with taxonomy (family) plot
+##Putting together DA plot with taxonomy (class) plot
 combined_plot_feces <- plot_grid(
   taxonomy_plot_fecal+ 
     theme(plot.margin = unit(c(0.28, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
@@ -3014,21 +2999,276 @@ combined_plot_feces <- plot_grid(
   # theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
 combined_plot_feces
 
-##Adding q values 
-combined_plot_feces_q <- plot_grid(
-  taxonomy_plot_fecal+ theme(plot.margin = unit(c(0.25, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
-  DA_feces_plot_MaAslinANCOM_q +  theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"), 
-                                         plot.title = element_blank(),
-                                         legend.position = "none",
-                                         strip.text = element_blank(),
-                                         strip.background = element_rect(fill = "white")),
+#####Only largest positive and negative fold changes#####
+DA_feces_plot_together %>%
+  filter(direction == "elevated", test == "MaAsLin3")%>%
+  nrow() #26 positive fold change 
+DA_feces_plot_together %>%
+  filter(direction == "depleted", test == "MaAsLin3")%>%
+  nrow() #20 negative fold change 
+
+######Which are the largest positive fold changes?#######
+top_positive_fold_changes_feces <- DA_feces_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  head(n = 18)  #Top 9 (since there are two tests)
+top_positive_fold_changes_feces
+
+######Which are the largest negative fold changes?#######
+top_negative_fold_changes_feces<- DA_feces_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  tail(n = 12) #top 6
+top_negative_fold_changes_feces
+
+#Filter main plot data object to include only the largest fold change groups
+DA_feces_plot_together_largest_fold_changes <-  DA_feces_plot_together%>%
+  filter(Group %in% c(
+    unique(top_negative_fold_changes_feces$Group),
+    unique(top_positive_fold_changes_feces$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_feces ##dataframe object for Taxonomy of feces AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_fecal_largest_fold_changes <- DA_feces_plot_together_largest_fold_changes %>%
+  left_join(input_taxonomy_feces, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_fecal_largest_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_fecal$group)
+DA_feces_plot_together_largest_fold_changes$Group <- 
+  factor(DA_feces_plot_together_largest_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_fecal_largest_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_fecal_largest_fold_changes <- ggplot(taxonomy_plot_data_fecal_largest_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -5, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_fecal_largest_fold_changes
+
+#Plotting 
+DA_feces_plot_MaAslinANCOM_largest_fold_changes <-
+  ggplot(data = DA_feces_plot_together_largest_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_feces_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = gen_material, color = gen_material),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_feces_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = gen_material, color = gen_material),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  scale_color_manual(values = gen.material.palette,
+                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  scale_fill_manual(values=gen.material.palette,
+                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  guides(color=guide_legend(order = 1,title="Library Type", title.position="top"), 
+         fill=guide_legend(order = 1,title="Library Type", title.position="top"))+
+  new_scale_color()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_feces_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_feces_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_feces_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed', 
+             alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_color_manual(values = c("depleted" = "red", "elevated" = "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Library Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "FECES")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=17, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_feces_plot_MaAslinANCOM_largest_fold_changes
+
+##Putting together DA plot with taxonomy (class) plot
+combined_plot_feces_largest_fold_changes <- plot_grid(
+  taxonomy_plot_fecal_largest_fold_changes+ 
+    theme(plot.margin = unit(c(0.28, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
+  DA_feces_plot_MaAslinANCOM_largest_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, 4.3), "cm"),
+                                     plot.title = element_blank(),
+                                     legend.position = "none",
+  ),
   ncol = 2, 
   rel_widths = c(0.4,2),  # Adjust the width ratio as needed
   align = "h", 
-  axis = "tb") 
-  # labs(title = "FECES")+
-  # theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
-combined_plot_feces_q
+  axis = "tb")
+combined_plot_feces_largest_fold_changes
+
+#####Groups that are not part of the positive and negative fold changes (supplementary)#####
+#Filter main plot data object to include only the groups that are not part of the largest fold changes
+DA_feces_plot_together_others_fold_changes <-  DA_feces_plot_together%>%
+  filter(!Group %in% c(
+    unique(top_negative_fold_changes_feces$Group),
+    unique(top_positive_fold_changes_feces$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_feces ##dataframe object for Taxonomy of feces AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_fecal_others_fold_changes <- DA_feces_plot_together_others_fold_changes %>%
+  left_join(input_taxonomy_feces, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_fecal_others_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_fecal$group)
+DA_feces_plot_together_others_fold_changes$Group <- 
+  factor(DA_feces_plot_together_others_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_fecal_others_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_fecal_others_fold_changes <- ggplot(taxonomy_plot_data_fecal_others_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -5, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_fecal_others_fold_changes
+
+#Plotting 
+DA_feces_plot_MaAslinANCOM_others_fold_changes <-
+  ggplot(data = DA_feces_plot_together_others_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_feces_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = gen_material, color = gen_material),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_feces_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = gen_material, color = gen_material),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  scale_color_manual(values = gen.material.palette,
+                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  scale_fill_manual(values=gen.material.palette,
+                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  guides(color=guide_legend(order = 1,title="Library Type", title.position="top"), 
+         fill=guide_legend(order = 1,title="Library Type", title.position="top"))+
+  new_scale_color()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_feces_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_feces_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_feces_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed', 
+             alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +
+  coord_flip() +
+  scale_color_manual(values = c("depleted" = "red", "elevated" = "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Library Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "FECES")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=26), legend.text=element_text(size=26),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=17, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_feces_plot_MaAslinANCOM_others_fold_changes
+
+##Putting together DA plot with taxonomy (class) plot
+combined_plot_feces_others_fold_changes <- plot_grid(
+  taxonomy_plot_fecal_others_fold_changes+ 
+    theme(plot.margin = unit(c(0.28, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
+  DA_feces_plot_MaAslinANCOM_others_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, 0.7), "cm"),
+                                                          plot.title = element_blank(),
+                                                          legend.position = "none",
+  ),
+  ncol = 2, 
+  rel_widths = c(0.4,2),  
+  align = "h", 
+  axis = "tb")
+combined_plot_feces_others_fold_changes
 
 ##CATCH BASINS (DNA vs cDNA)#####
 ###ANCOMBC#######
@@ -3219,17 +3459,27 @@ water.group_log_corr_abn <- ancombc_output_water.group$bias_correct_log_table %>
   mutate(plot = 'log(Bias-corrected abundances)',
          gen_material = ifelse(grepl("c", Sample), "cDNA", "DNA"))
 
-####FIGURE 8C - DA EMPHASIS ON DNA vs cDNA#####
+####FIGURE 7C - DA EMPHASIS ON DNA vs cDNA#####
 #Only feces had Differentially abundant ARG groups
-combined_plot_feces
+combined_plot_feces_largest_fold_changes
 
-figure8C <-plot_grid(combined_plot_feces, 
+figure7C <-plot_grid(combined_plot_feces_largest_fold_changes, 
                             labels = c("C", " "),
-                            label_size = 32,
+                            label_size = 35,
                             ncol = 1)
   #labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-figure8C
+figure7C
+
+
+####SFIGURE9B -  DA EMPHASIS ON DNA vs cDNA - Feces not the largest logfold changes#####
+#Put together these 2 plots:
+combined_plot_feces_others_fold_changes
+
+sfigure9B <-plot_grid(combined_plot_feces_others_fold_changes,
+                      labels = c("B"),
+                      label_size = 35)
+sfigure9B
 
 
 ##DNA (CB vs Feces)#####
@@ -3461,7 +3711,8 @@ top_DA_DNA
 DA_DNA_plot_together <- DA_DNA_plot_together%>%
   filter(Group %in% unique(top_DA_DNA$Group))
 
-###PLOTTING DA#
+####Plotting Differential Abundance#######
+#####All DA Groups#######
 ##Ordering how I want the "Group" taxlevel to show up on the plot 
 input_taxonomy_DNA ##dataframe object for Taxonomy of DNA OTUs 
 
@@ -3486,7 +3737,7 @@ taxonomy_plot_DNA <- ggplot(taxonomy_plot_data_DNA) +
   labs(title = "Class") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Group)) +  # Ensure y-axis matches the taxon order
-  theme(plot.title = element_text(hjust = 0, size = 22, vjust = -0.3, face = "bold", family = "sans"),
+  theme(plot.title = element_text(hjust = 0, size = 22, vjust = -7, face = "bold", family = "sans"),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         panel.grid = element_blank(),
@@ -3573,15 +3824,8 @@ DA_DNA_plot_MaAslinANCOM
 #There's a warning here. It is because of those samples where the group is not present at all. 
 #For example: data2_ARG.group@otu_table["MEG_7112", "F2F02"]. MEG_71112 (representative of the TETM group) is not present at all in F2F02. So won't get an abundance value out of it
 
-##Adding the q values
-DA_DNA_plot_MaAslinANCOM_q <- DA_DNA_plot_MaAslinANCOM +
-  geom_text(inherit.aes=FALSE,
-            data = DA_DNA_plot_together %>% filter(plot == 'Log2 Fold change with 95%CI'),
-            aes(x = Group, y = coef, label = DA),
-            position = position_dodge2(width = 0.75),
-            vjust = -0.6, size = 3)
 
-##Putting together DA plot with taxonomy (family) plot
+##Putting together DA plot with taxonomy (Class) plot
 combined_plot_DNA <- plot_grid(
   taxonomy_plot_DNA+ theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
   DA_DNA_plot_MaAslinANCOM + theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"),
@@ -3598,20 +3842,285 @@ combined_plot_DNA <- plot_grid(
   theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
 combined_plot_DNA
 
-##Adding q values 
-combined_plot_DNA_q <- plot_grid(
-  taxonomy_plot_DNA+ theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
-  DA_DNA_plot_MaAslinANCOM_q + theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"),
-                                     plot.title = element_blank(),
-                                     strip.text=element_text(size=16, color = "white", face = "bold")),
-  ncol = 2, 
-  rel_widths = c(0.4,2),  # Adjust the width ratio as needed
-  align = "h", 
-  axis = "tb") +
-  labs(title = "Metagenomic libraries (DNA)")+
-  theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
-combined_plot_DNA_q
 
+#####Only largest positive and negative fold changes#####
+DA_DNA_plot_together %>%
+  filter(direction == "elevated", test == "MaAsLin3")%>%
+  nrow() #23 positive fold change 
+DA_DNA_plot_together %>%
+  filter(direction == "depleted", test == "MaAsLin3")%>%
+  nrow() #18 negative fold change 
+
+######Which are the largest positive fold changes?#######
+top_positive_fold_changes_DNA <- DA_DNA_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  head(n = 16)  #Top 8 (since there are two tests)
+top_positive_fold_changes_DNA
+
+######Which are the largest negative fold changes?#######
+top_negative_fold_changes_DNA<- DA_DNA_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  tail(n = 12) #top 6
+top_negative_fold_changes_DNA
+
+#Filter main plot data object to include only the largest fold change groups
+DA_DNA_plot_together_largest_fold_changes <-  DA_DNA_plot_together%>%
+  filter(Group %in% c(
+    unique(top_negative_fold_changes_DNA$Group),
+    unique(top_positive_fold_changes_DNA$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_DNA ##dataframe object for Taxonomy of DNA AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_DNA_largest_fold_changes <- DA_DNA_plot_together_largest_fold_changes %>%
+  left_join(input_taxonomy_DNA, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_DNA_largest_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_DNA$group)
+DA_DNA_plot_together_largest_fold_changes$Group <- 
+  factor(DA_DNA_plot_together_largest_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_DNA_largest_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_DNA_largest_fold_changes <- ggplot(taxonomy_plot_data_DNA_largest_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -7, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_DNA_largest_fold_changes
+
+#Plotting 
+DA_DNA_plot_MaAslinANCOM_largest_fold_changes <-
+  ggplot(data = DA_DNA_plot_together_largest_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_DNA_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = sample_type, color = sample_type),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_DNA_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = sample_type, color = sample_type),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Sample type", title.position="top"),
+         fill=guide_legend(order = 1,title="Sample type", title.position="top"))+
+  scale_fill_manual(values=sample.type.palette, 
+                    labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  scale_color_manual(values = sample.type.palette, 
+                     labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  new_scale_color()+
+  new_scale_fill()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_DNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_DNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_DNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_fill_manual(values=sample.type.palette) +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Sample Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "Metagenomic libraries (DNA)")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_DNA_plot_MaAslinANCOM_largest_fold_changes
+
+##Putting together DA plot with taxonomy (Class) plot
+combined_plot_DNA_MaAslinANCOM_largest_fold_changes <- plot_grid(
+  taxonomy_plot_DNA_largest_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  
+  DA_DNA_plot_MaAslinANCOM_largest_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, 4), "cm"),
+                                   plot.title = element_blank(),
+                                   legend.position = "none",
+  ),
+  ncol = 2, 
+  rel_widths = c(0.4,2),  
+  align = "h", 
+  axis = "tb") 
+  # labs(title = "Metagenomic libraries (DNA)")+
+  # theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
+combined_plot_DNA_MaAslinANCOM_largest_fold_changes
+
+#####Groups that are not part of the positive and negative fold changes (supplementary)#####
+#Filter main plot data object to include only groups that are not part of the positive and negative fold changes
+DA_DNA_plot_together_others_fold_changes <-  DA_DNA_plot_together%>%
+  filter(!Group %in% c(
+    unique(top_negative_fold_changes_DNA$Group),
+    unique(top_positive_fold_changes_DNA$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_DNA ##dataframe object for Taxonomy of DNA AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_DNA_others_fold_changes <- DA_DNA_plot_together_others_fold_changes %>%
+  left_join(input_taxonomy_DNA, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_DNA_others_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_DNA$group)
+DA_DNA_plot_together_others_fold_changes$Group <- 
+  factor(DA_DNA_plot_together_others_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_DNA_others_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_DNA_others_fold_changes <- ggplot(taxonomy_plot_data_DNA_others_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -7, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_DNA_others_fold_changes
+
+#Plotting 
+DA_DNA_plot_MaAslinANCOM_others_fold_changes <-
+  ggplot(data = DA_DNA_plot_together_others_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_DNA_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = sample_type, color = sample_type),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_DNA_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = sample_type, color = sample_type),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Sample type", title.position="top"),
+         fill=guide_legend(order = 1,title="Sample type", title.position="top"))+
+  scale_fill_manual(values=sample.type.palette, 
+                    labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  scale_color_manual(values = sample.type.palette, 
+                     labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  new_scale_color()+
+  new_scale_fill()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_DNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_DNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_DNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_fill_manual(values=sample.type.palette) +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Sample Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "Metagenomic libraries (DNA)")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_DNA_plot_MaAslinANCOM_others_fold_changes
+
+##Putting together DA plot with taxonomy (Class) plot
+combined_plot_DNA_MaAslinANCOM_others_fold_changes <- plot_grid(
+  taxonomy_plot_DNA_others_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  
+  DA_DNA_plot_MaAslinANCOM_others_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, -1.65), "cm"),
+                                                        plot.title = element_blank(),
+                                                        legend.position = "none",
+  ),
+  ncol = 2, 
+  rel_widths = c(0.4,2),  
+  align = "h", 
+  axis = "tb") 
+# labs(title = "Metagenomic libraries (DNA)")+
+# theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
+combined_plot_DNA_MaAslinANCOM_others_fold_changes
 
 ##cDNA (CB vs Feces)#####
 ###ANCOMBC#######
@@ -3837,7 +4346,8 @@ top_DA_cDNA
 DA_cDNA_plot_together <- DA_cDNA_plot_together%>%
   filter(Group %in% unique(top_DA_cDNA$Group))
 
-###PLOTTING DA#
+####Plotting Differential Abundance#######
+#####All DA Groups#######
 ##Ordering how I want the "Group" taxlevel to show up on the plot 
 input_taxonomy_cDNA ##dataframe object for Taxonomy of cDNA OTUs 
 
@@ -3860,7 +4370,7 @@ taxonomy_plot_cDNA <- ggplot(taxonomy_plot_data_cDNA) +
   labs(title = "Class") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_cDNA$Group)) +  # Ensure y-axis matches the taxon order
-  theme(plot.title = element_text(hjust = 0, size = 22, vjust = -0.3, face = "bold", family = "sans"),
+  theme(plot.title = element_text(hjust = 0, size = 22, vjust = -7, face = "bold", family = "sans"),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         panel.grid = element_blank(),
@@ -3945,14 +4455,6 @@ DA_cDNA_plot_MaAslinANCOM <-
         panel.grid.minor = element_blank())
 DA_cDNA_plot_MaAslinANCOM
 
-##Adding the q values
-DA_cDNA_plot_MaAslinANCOM_q <- DA_cDNA_plot_MaAslinANCOM +
-  geom_text(inherit.aes=FALSE,
-            data = DA_cDNA_plot_together %>% filter(plot == 'Log2 Fold change with 95%CI'),
-            aes(x = Group, y = coef, label = DA),
-            position = position_dodge2(width = 0.75),
-            vjust = -0.6, size = 3)
-
 
 ##Putting together DA plot with taxonomy plot
 combined_plot_cDNA <- plot_grid(
@@ -3972,145 +4474,315 @@ combined_plot_cDNA <- plot_grid(
 combined_plot_cDNA
 
 
-##Adding q values 
-combined_plot_cDNA_q <- plot_grid(
-  taxonomy_plot_cDNA+ theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
-  DA_cDNA_plot_MaAslinANCOM_q + theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"),
-                                      plot.title = element_blank(),
-                                      strip.text=element_text(size=16, color = "white", face = "bold")),
-  ncol = 2, 
-  rel_widths = c(0.4,2),  # Adjust the width ratio as needed
-  align = "h", 
-  axis = "tb") +
-  labs(title = "Metatranscriptomic libraries (RNA (cDNA))")+
-  theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
-combined_plot_cDNA_q
+#####Only largest positive and negative fold changes#####
+DA_cDNA_plot_together %>%
+  filter(direction == "elevated", test == "MaAsLin3")%>%
+  nrow() #20 positive fold change 
+DA_cDNA_plot_together %>%
+  filter(direction == "depleted", test == "MaAsLin3")%>%
+  nrow() #20 negative fold change 
 
+######Which are the largest positive fold changes?#######
+top_positive_fold_changes_cDNA <- DA_cDNA_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  head(n = 14)  #Top 7 (since there are two tests)
+top_positive_fold_changes_cDNA
+
+######Which are the largest negative fold changes?#######
+top_negative_fold_changes_cDNA<- DA_cDNA_plot_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(Group) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), Group, test) %>%
+  tail(n = 14) #top 7
+top_negative_fold_changes_cDNA
+
+#Filter main plot data object to include only the largest fold change groups
+DA_cDNA_plot_together_largest_fold_changes <-  DA_cDNA_plot_together%>%
+  filter(Group %in% c(
+    unique(top_negative_fold_changes_cDNA$Group),
+    unique(top_positive_fold_changes_cDNA$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_cDNA ##dataframe object for Taxonomy of cDNA AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_cDNA_largest_fold_changes <- DA_cDNA_plot_together_largest_fold_changes %>%
+  left_join(input_taxonomy_cDNA, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_cDNA_largest_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_cDNA$group)
+DA_cDNA_plot_together_largest_fold_changes$Group <- 
+  factor(DA_cDNA_plot_together_largest_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_cDNA_largest_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_cDNA_largest_fold_changes <- ggplot(taxonomy_plot_data_cDNA_largest_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -7, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_cDNA_largest_fold_changes
+
+#Plotting 
+DA_cDNA_plot_MaAslinANCOM_largest_fold_changes <-
+  ggplot(data = DA_cDNA_plot_together_largest_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_cDNA_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = sample_type, color = sample_type),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_cDNA_plot_together_largest_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = sample_type, color = sample_type),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Sample type", title.position="top"),
+         fill=guide_legend(order = 1,title="Sample type", title.position="top"))+
+  scale_fill_manual(values=sample.type.palette, 
+                    labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  scale_color_manual(values = sample.type.palette, 
+                     labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  new_scale_color()+
+  new_scale_fill()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_cDNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_cDNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_cDNA_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_fill_manual(values=sample.type.palette) +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Sample Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "Metagenomic libraries (cDNA)")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_cDNA_plot_MaAslinANCOM_largest_fold_changes
+
+##Putting together DA plot with taxonomy (Class) plot
+combined_plot_cDNA_MaAslinANCOM_largest_fold_changes <- plot_grid(
+  taxonomy_plot_cDNA_largest_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  
+  DA_cDNA_plot_MaAslinANCOM_largest_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, 4), "cm"),
+          plot.title = element_blank(),
+          legend.position = "none",
+  ),
+  ncol = 2, 
+  rel_widths = c(0.4,2),  
+  align = "h", 
+  axis = "tb") 
+# labs(title = "Metagenomic libraries (cDNA)")+
+# theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
+combined_plot_cDNA_MaAslinANCOM_largest_fold_changes
+
+#####Groups that are not part of the positive and negative fold changes (supplementary)#####
+#Filter main plot data object to include only groups that are not part of the positive and negative fold changes
+DA_cDNA_plot_together_others_fold_changes <-  DA_cDNA_plot_together%>%
+  filter(!Group %in% c(
+    unique(top_negative_fold_changes_cDNA$Group),
+    unique(top_positive_fold_changes_cDNA$Group)
+  ))
+
+##Ordering how I want the "group" taxlevel to show up on the plot 
+input_taxonomy_cDNA ##dataframe object for Taxonomy of cDNA AMR gene groups 
+
+# Create the taxonomy plot data and modify the data to create new columns with the "label_" prefix
+taxonomy_plot_data_cDNA_others_fold_changes <- DA_cDNA_plot_together_others_fold_changes %>%
+  left_join(input_taxonomy_cDNA, by= "Group")%>%
+  distinct(Type, Class, Group) %>%
+  arrange(Type, Class) %>%
+  mutate(Group = factor(Group, levels = rev(Group)))%>% ##Since I arranged by Class, this is the order I want the genera to show up
+  dplyr::group_by(Class) %>%
+  dplyr::mutate(label_Class = ifelse(row_number() == 1, Class, "")) %>%  # Create 'label_Class' with only the first occurrence of each class
+  ungroup() 
+taxonomy_plot_data_cDNA_others_fold_changes
+
+##Factor "Group" level by the order I want (taxonomy_plot_data_cDNA$group)
+DA_cDNA_plot_together_others_fold_changes$Group <- 
+  factor(DA_cDNA_plot_together_others_fold_changes$Group, 
+         levels = rev(taxonomy_plot_data_cDNA_others_fold_changes$Group))
+
+# Create the updated taxonomy plot
+taxonomy_plot_cDNA_others_fold_changes <- ggplot(taxonomy_plot_data_cDNA_others_fold_changes) +
+  geom_text(aes(x =0, y = Group, 
+                label = label_Class), 
+            hjust = 0, vjust = 0.5, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  labs(title = "Class\n \n ") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0, size = 28, vjust = -7, face = "bold", family = "sans"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()
+  )+
+  coord_cartesian(xlim = c(0.05, 1)) #had to add this to move the geom_text more to the left
+taxonomy_plot_cDNA_others_fold_changes
+
+#Plotting 
+DA_cDNA_plot_MaAslinANCOM_others_fold_changes <-
+  ggplot(data = DA_cDNA_plot_together_others_fold_changes) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_cDNA_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+               aes(x=Group, y=logvalue, 
+                   fill = sample_type, color = sample_type),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_cDNA_plot_together_others_fold_changes%>%filter(grepl("abundances", plot)),
+             aes(x=Group, y=logvalue, fill = sample_type, color = sample_type),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Sample type", title.position="top"),
+         fill=guide_legend(order = 1,title="Sample type", title.position="top"))+
+  scale_fill_manual(values=sample.type.palette, 
+                    labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  scale_color_manual(values = sample.type.palette, 
+                     labels = c("Water" = "Catch Basins", "Feces" = "Feces")) +
+  new_scale_color()+
+  new_scale_fill()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_cDNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=Group, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_cDNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=Group, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_cDNA_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  scale_x_discrete(position='bottom') +
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_fill_manual(values=sample.type.palette) +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Sample Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         pch=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  labs(title = "Metagenomic libraries (cDNA)")+
+  theme_bw()+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_cDNA_plot_MaAslinANCOM_others_fold_changes
+
+##Putting together DA plot with taxonomy (Class) plot
+combined_plot_cDNA_MaAslinANCOM_others_fold_changes <- plot_grid(
+  taxonomy_plot_cDNA_others_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  
+  DA_cDNA_plot_MaAslinANCOM_others_fold_changes + 
+    theme(plot.margin = unit(c(0.2, 0.5, 0.2, -1.65), "cm"),
+          plot.title = element_blank(),
+          legend.position = "none",
+  ),
+  ncol = 2, 
+  rel_widths = c(0.4,2),  
+  align = "h", 
+  axis = "tb") 
+# labs(title = "Metagenomic libraries (cDNA)")+
+# theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
+combined_plot_cDNA_MaAslinANCOM_others_fold_changes
 
 
 ####FIGURE 5CandD#####
 #Put together these 2 plots:
-combined_plot_DNA
-combined_plot_cDNA
+combined_plot_DNA_MaAslinANCOM_largest_fold_changes
+combined_plot_cDNA_MaAslinANCOM_largest_fold_changes
 
-figure5CandD <-plot_grid(combined_plot_DNA+
-                           theme(plot.title = element_blank()), 
-                         combined_plot_cDNA+
-                           theme(plot.title = element_blank()), 
+figure5CandD <-plot_grid(combined_plot_DNA_MaAslinANCOM_largest_fold_changes,
+                         combined_plot_cDNA_MaAslinANCOM_largest_fold_changes, 
                          align = "v",
                          labels = c("C", "D"),
-                         # rel_heights = c(1.05,0.95),
-                         label_size = 32,
+                         # rel_heights = c(0.6,0.4),
+                         label_size = 35,
                          ncol = 1)
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
 figure5CandD
 
 
-#UPSET PLOT #####
-##DNA (CB vs. Feces)-Figure 4C#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-data2_ARG.DNA.group <- tax_glom (data2_ARG.DNA, taxrank = "Group", NArm = F)
-data2_ARG.DNA.group ##808 groups  are present in 60 DNA samples
-upset.data2_ARG.DNA.group <- MicrobiotaProcess::get_upset(data2_ARG.DNA.group, factorNames="sample_type") 
-upset.data2_ARG.DNA.group
+####SFIGURE8CD -  DA EMPHASIS ON FECES VS CATCH BASINS - Not the largest logfold changes#####
+#Put together these 2 plots:
+combined_plot_DNA_MaAslinANCOM_others_fold_changes
+combined_plot_cDNA_MaAslinANCOM_others_fold_changes
 
-upset.data2_ARG.DNA.group <- upset.data2_ARG.DNA.group%>%
-  rename("CB" = "Water")
-
-#Plot
-upset_plot_ARG_DNA <- UpSetR::upset(upset.data2_ARG.DNA.group,
-              sets.bar.color = c("#4C72B0", 
-                                 "brown"),
-              order.by = "freq", text.scale = c(3, 2.5, 2.5, 1.5, 3, 2), 
-              point.size = 5, line.size = 2, mainbar.y.label= "Group count",
-              sets.x.label = "Group count", 
-              set_size.show = F) 
-upset_plot_ARG_DNA
-
-##saving the upset plot
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4C.svg",
-        width=7, height=6)
-upset_plot_ARG_DNA
-dev.off()
-
-##cDNA (CB vs. Feces)-Figure 4D#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-data2_ARG.cDNA.group <- tax_glom (data2_ARG.cDNA, taxrank = "Group", NArm = F)
-data2_ARG.cDNA.group ##300 groups are present in cDNA samples
-upset.data2_ARG.cDNA.group <- MicrobiotaProcess::get_upset(data2_ARG.cDNA.group, factorNames="sample_type") 
-upset.data2_ARG.cDNA.group
-upset.data2_ARG.cDNA.group <- upset.data2_ARG.cDNA.group%>%
-  rename("CB" = "Water")
-
-#Plot
-upset_plot_ARG_cDNA <- UpSetR::upset(
-  upset.data2_ARG.cDNA.group,
-  sets.bar.color = c("#4C72B0", 
-                     "brown"),
-  order.by = "freq",
-  text.scale = c(3, 2.5, 2.5, 1.5, 3, 2),
-  point.size = 5,
-  line.size = 2,
-  mainbar.y.label = "Group count",
-  sets.x.label = "Group count",
-  set_size.show = FALSE)
-upset_plot_ARG_cDNA 
-
-##saving the upset plot
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure4D.svg",
-        width=7, height=6)
-upset_plot_ARG_cDNA 
-dev.off()
-
-
-##Feces (cDNA vs. DNA) - Figure 8C#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-data2_ARG.feces.group <- tax_glom (data2_ARG.feces, taxrank = "Group", NArm = F)
-data2_ARG.feces.group ##279 groups are present in feces samples (96 samples)
-upset.data2_ARG.feces.group <- MicrobiotaProcess::get_upset(data2_ARG.feces.group, factorNames="gen_material") 
-upset.data2_ARG.feces.group
-
-upset.data2_ARG.feces.group <- upset.data2_ARG.feces.group %>%
-  rename("RNA(cDNA)" = cDNA)
-
-#Plot
-upset_plot_ARG_feces<- UpSetR::upset(upset.data2_ARG.feces.group,
-              sets.bar.color = c("#CC79A7", "#009E73"), 
-              order.by = "freq", text.scale = c(3, 2.5, 2.5, 2, 3, 2), 
-              point.size = 5, line.size = 2, mainbar.y.label= "Group count",
-              sets.x.label = "Group count", 
-              set_size.show = F) 
-upset_plot_ARG_feces
-
-##saving the upset plot - Figure 8C
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8C.svg",
-        width=7, height=6)
-upset_plot_ARG_feces
-dev.off()
-
-
-##CATCH BASINS (cDNA vs. DNA) - Figure 8D#####
-##making the dataset for upset of UpSetR (binary matrix, present or absent)
-data2_ARG.water.group <- tax_glom (data2_ARG.water, taxrank = "Group", NArm = F)
-data2_ARG.water.group ##groups are present in water samples (12 samples)
-upset.data2_ARG.water.group <- MicrobiotaProcess::get_upset(data2_ARG.water.group, factorNames="gen_material") 
-upset.data2_ARG.water.group
-
-upset.data2_ARG.water.group <- upset.data2_ARG.water.group %>%
-  rename("RNA(cDNA)" = cDNA)
-
-#Plot
-upset_plot_ARG_CB <- UpSetR::upset(upset.data2_ARG.water.group,
-              sets.bar.color = c("#CC79A7", "#009E73"), 
-              order.by = "freq", text.scale = c(3, 2.5, 2.5, 2, 3, 2), 
-              point.size = 5, line.size = 2, mainbar.y.label= "Group count",
-              sets.x.label = "Group count", 
-              set_size.show = F) 
-upset_plot_ARG_CB
-
-##saving the upset plot - Figure 8D
-svglite("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/Figure8D.svg",
-        width=7, height=6)
-upset_plot_ARG_CB
-dev.off()
+sfigure8CD<-plot_grid(combined_plot_DNA_MaAslinANCOM_others_fold_changes,
+                      combined_plot_cDNA_MaAslinANCOM_others_fold_changes+
+                         theme(plot.title = element_blank()), 
+                       align = "v",
+                       ncol = 1,
+                       labels = c("C", "D"),
+                       label_size = 35
+                       #rel_heights = c(0.65, 0.35)
+                      )
+sfigure8CD
