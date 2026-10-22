@@ -51,7 +51,7 @@ cran_pkgs = c(
   "tidyverse", "ggplot2", "stringr", "dplyr", "vegan", "cowplot",
   "ggdendro", "randomcoloR", "ggpubr", "ggsignif", "UpSetR",
   "ggtext", "ggnewscale", "rstatix", "ggrepel", "ggh4x", "svglite",
-  "writexl", "paletteer", "lme4", "lmerTest", "car", "emmeans",
+  "paletteer", "lme4", "lmerTest", "car", "emmeans",
   "Polychrome", "colorspace", "devtools", "remotes", "patchwork"
 )
 #BioConductor
@@ -320,7 +320,7 @@ DNA.reads_hostrem_humann_mapping <- subset(reads_hostrem_humann_mapping, gen_mat
 wilcox_test(DNA.reads_hostrem_humann_mapping, 
             Percentage_reads_mapped~sample_type) #s., p = 0.000385
 
-###Supplementary Figure? Percentage aligned reads####
+###Percentage aligned reads figure?####
 percent_alignedreads_WvF.cDNAandDNA
 percent_alignedreads.cDNAvsDNA.WaF
 sfigureX_CD <- plot_grid(percent_alignedreads_WvF.cDNAandDNA + 
@@ -396,16 +396,19 @@ unintegrated_pathways_abundance <- pathways_ps %>%
             `Max Pathway Abundance (%)` = max(Abundance))%>% # Mean abundance per OTU
   rename("Sample type" = sample_type,
          "Library Type" = gen_material,
-         "Pathway" = OTU,
+         "Pathway" = OTU
   )%>%
   ungroup()
 unintegrated_pathways_abundance
 
 #Mean abundance across all samples of unintegrated and unmapped pathways:
 unintegrated_pathways_abundance %>%
-  group_by(Pathway)%>%
+  group_by(Pathway, `Sample type`)%>%
   summarise(mean_group_tss_abundance = mean(`Mean Pathway Abundance (%)`),
-            sd_group_tss_abundance = sd(`Mean Pathway Abundance (%)`))
+            sd_group_tss_abundance = sd(`Mean Pathway Abundance (%)`)) 
+# Pathway      `Sample type` mean_group_tss_abundance sd_group_tss_abundance
+# UNINTEGRATED Feces                             34.6                 0.910 
+# UNINTEGRATED Water                             26.6                 0.0173
 
 #Dropping Unmapped and Ungrouped####
 KO_ps #7205 taxa 
@@ -421,660 +424,6 @@ pathways.tss_ps ##739 pathways (excluding "UNMAPPED" and "UNINTEGRATED")
 
 #BETA_DIV ####
 ##BRAY CURTIS####
-###GENE FAMILIES#####
-#### FECES SAMPLES (DNA vs cDNA)#######
-##Subsetting only feces samples
-KO.feces.tss <- subset_samples(KO.tss_ps, sample_type=="Feces")
-KO.feces.tss <- prune_taxa(taxa_sums(KO.feces.tss) > 0, KO.feces.tss) 
-KO.feces.tss #96 samples
-##Distance matrix
-KO.feces.tss.bray <- vegdist(t(KO.feces.tss@otu_table), method = "bray") 
-KO.feces.tss.df <- as(KO.feces.tss@sam_data,"data.frame") # make DF from metadata
-
-##Adding a column concatenating "gen_material" and "feedlot", then making feedlot a factor
-KO.feces.tss.df<- KO.feces.tss.df %>%
-  mutate (gen_material_spec_2 = paste(gen_material, feedlot, sep = '_'),
-          feedlot = factor(feedlot))
-
-#####PERMANOVA#####
-#Is there an interaction? 
-set.seed(87)
-feces_KO_BC_adonis_interaction <- adonis2(KO.feces.tss.bray ~ gen_material * feedlot,
-                                          by = "margin",
-                                          KO.feces.tss.df, 
-                                          p.adjust.methods = "BH", permutations = 9999)
-feces_KO_BC_adonis_interaction #No
-
-##Model Library Type and feedlot, stratified by original sample from which DNA and RNA were extracted 
-set.seed(87)
-feces_KO_BC_adonis <- adonis2(KO.feces.tss.bray ~ gen_material + feedlot, 
-                              strata = KO.feces.tss.df$original_sample,
-                              by = "margin",
-                              KO.feces.tss.df, 
-                              p.adjust.methods = "BH", permutations = 9999)
-feces_KO_BC_adonis #18.6% of the variation is due to Library Type, p = 0.0001
-#12.1% of the variation is due to feedlot, p = 0.0001
-
-
-#PERMDISP- Feedlot
-# Run the betadisper function, average distance to centroid
-bray.feces.feedlot.disp.KO <- betadisper(KO.feces.tss.bray, KO.feces.tss.df$feedlot)
-bray.feces.feedlot.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.feces.feedlot.permdisp.KO <- permutest(bray.feces.feedlot.disp.KO, permutations = 9999, pairwise = 1)
-bray.feces.feedlot.permdisp.KO 
-##Different dispersions of variance ( p = 0.0114)
-
-#PERMDISP- Gen_material
-# Run the betadisper function, average distance to centroid
-bray.feces.genmat.disp.KO <- betadisper(KO.feces.tss.bray, KO.feces.tss.df$gen_material)
-bray.feces.genmat.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.feces.genmat.permdisp.KO <- permutest(bray.feces.genmat.disp.KO, permutations = 9999)
-bray.feces.genmat.permdisp.KO 
-#No difference in dispersions of variance between DNA and cDNA (p = 0.108)
-
-#### ORDINATION
-set.seed(87)
-KO.feces.tss.bray.ord <- metaMDS(KO.feces.tss.bray, k= 2, try= 20, trymax= 1000, autotransform = F)
-
-#Extract ordination coordinates, add metadata
-KO.feces.tss.bray.plot <- ordiplot(KO.feces.tss.bray.ord$points)
-#Extract the scores (coordinates) of the points from the ordination plot object 
-KO.feces.tss.bray.scrs <- scores(KO.feces.tss.bray.plot, display = "sites") 
-#This step creates a new data frame that includes both the ordination scores (MDS) and additional metadata
-KO.feces.tss.bray.scrs <- cbind(as.data.frame(KO.feces.tss.bray.scrs), 
-                                   gen_material = KO.feces.tss.df$gen_material, 
-                                   feedlot = factor(KO.feces.tss.df$feedlot), 
-                                   gen_material_spec_2 = KO.feces.tss.df$gen_material_spec_2,
-                                   sampleID = rownames(KO.feces.tss.df))
-
-#####FEEDLOT EFFECT#####
-## BC
-KO.feces.tss.bray.scrs #have coodrinates and metadata
-##Centroids according to feedlot
-KO.feces.feedlot.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ feedlot, data = KO.feces.tss.bray.scrs, FUN = mean) 
-KO.feces.feedlot.tss.bray.segs <- merge(KO.feces.tss.bray.scrs, 
-                                           setNames(KO.feces.feedlot.tss.bray.cent, c("feedlot","cMDS1","cMDS2")),
-                                           by = 'feedlot', sort = F)
-
-# Extract R2 and p-values
-##Model gen_material and feedlot
-feces_KO_BC_adonis #have the model
-R2_feces_feedlot_BC_adonis_KO <- feces_KO_BC_adonis$R2[2] 
-pvalue_feces_feedlot_BC_adonis_KO<-feces_KO_BC_adonis$`Pr(>F)`[2]
-
-#### PLOT
-fecesKO_feedlot_BC_beta_div <- ggplot(KO.feces.feedlot.tss.bray.segs) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "FECES", color = "Feedlot") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  # stat_ellipse(geom= "polygon", aes (x= MDS1, y = MDS2, fill= color_gen_material, colour = color_gen_material), alpha = 0.2, lty = 2, linewidth = 1, level= 0.95)+
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = feedlot), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = feedlot), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = feedlot), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2, label= feedlot), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = feedlot_palette) +
-  theme(legend.position = "bottom",
-        legend.text = element_text(size = 22),
-        legend.title = element_text(size = 22, face = "bold"),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+  
-  guides(color = guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = -0.4, y = 0.1, ##change coordinates as needed
-           label = "Feedlot", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (feedlot)
-  annotate("text", x = -0.4, y = 0.1, ##change coordinates as needed
-           label = paste("R² = ", round(R2_feces_feedlot_BC_adonis_KO * 100, 1), "%",
-                         "\np = ", round(pvalue_feces_feedlot_BC_adonis_KO, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
-fecesKO_feedlot_BC_beta_div 
-
-#####LIBRARY TYPE EFFECT#####
-## BC
-KO.feces.tss.bray.scrs #have coordinates and metadata
-##Centroids according to gen_material (cDNA/DNA)
-KO.feces.genmat.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ gen_material, 
-                                              data = KO.feces.tss.bray.scrs, FUN = mean) 
-KO.feces.genmat.tss.bray.segs <- merge(KO.feces.tss.bray.scrs, 
-                                          setNames(KO.feces.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)
-
-# Extract R2 and p-values for genmat
-feces_KO_BC_adonis #have the model
-R2_feces_KO_BC_adonis_genmat <- feces_KO_BC_adonis$R2[1] 
-pvalue_feces_KO_BC_adonis_genmat<-feces_KO_BC_adonis$`Pr(>F)`[1]
-
-#### PLOT
-feces_genmat_KO_BC_beta_div <- ggplot(KO.feces.genmat.tss.bray.segs) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "FECES",
-       color = "Library Type") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  # stat_ellipse(geom= "polygon", aes (x= MDS1, y = MDS2, fill= color_gen_material, colour = color_gen_material), alpha = 0.2, lty = 2, linewidth = 1, level= 0.95)+
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material), colour= "white", size = 3, fontface = "bold") +
-  scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
-  theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
-        legend.text = element_text(colour = "black", size = 22),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
-  guides(
-    color = guide_legend (override.aes = list(size = 7))
-  )+
-  annotate("text", x = -0.3, y = 0.1, ##change coordinates as needed
-           label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
-  annotate("text", x = -0.3, y = 0.1, ##change coordinates as needed
-           label = paste("R² = ", round(R2_feces_KO_BC_adonis_genmat * 100, 1), "%",
-                         "\np = ", round(pvalue_feces_KO_BC_adonis_genmat, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
-feces_genmat_KO_BC_beta_div 
-
-####CATCH BASIN SAMPLES (DNA vs cDNA)####
-##Subsetting only water samples
-KO.water.tss <- subset_samples(KO.tss_ps, sample_type=="Water")
-KO.water.tss <- prune_taxa(taxa_sums(KO.water.tss) > 0, KO.water.tss) 
-KO.water.tss #24 samples
-##Distance matrix
-KO.water.tss.bray <- vegdist(t(KO.water.tss@otu_table), method = "bray") 
-KO.water.tss.df <- as(KO.water.tss@sam_data,"data.frame") # make DF from metadata
-
-##Adding a column concatenating "gen_material" and "feedlot", then making feedlot a factor
-KO.water.tss.df<- KO.water.tss.df %>%
-  mutate (gen_material_spec_2 = paste(gen_material, feedlot, sep = '_'),
-          feedlot = factor(feedlot))
-
-#####PERMANOVA#####
-#Is there an interaction? 
-set.seed(87)
-water_KO_BC_adonis_interaction <- adonis2(KO.water.tss.bray ~ gen_material * feedlot,
-                                       by = "margin",
-                                       KO.water.tss.df, 
-                                       p.adjust.methods = "BH", permutations = 9999)
-water_KO_BC_adonis_interaction #No
-
-##Model Library Type and feedlot, stratified by original sample from which DNA and RNA were extracted 
-set.seed(87)
-water_KO_BC_adonis <- adonis2(KO.water.tss.bray ~ gen_material + feedlot, 
-                           strata = KO.water.tss.df$original_sample,
-                           by = "margin",KO.water.tss.df, 
-                           p.adjust.methods = "BH", permutations = 9999)
-water_KO_BC_adonis #1.5% of the variation is due to Library Type, p = 0.0005
-#70.7% of the variation is due to feedlot, p = 0.0005
-
-#PERMDISP- Feedlot
-# Run the betadisper function, average distance to centroid
-bray.water.feedlot.disp.KO <- betadisper(KO.water.tss.bray, KO.water.tss.df$feedlot)
-bray.water.feedlot.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.water.feedlot.permdisp.KO <- permutest(bray.water.feedlot.disp.KO, permutations = 9999, pairwise = 1)
-bray.water.feedlot.permdisp.KO 
-##Different dispersions of variance ( p = 0.0043)
-
-#PERMDISP- Gen_material
-# Run the betadisper function, average distance to centroid
-bray.water.genmat.disp.KO <- betadisper(KO.water.tss.bray, KO.water.tss.df$gen_material)
-bray.water.genmat.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.water.genmat.permdisp.KO <- permutest(bray.water.genmat.disp.KO, permutations = 9999)
-bray.water.genmat.permdisp.KO 
-#No difference in dispersions of variance between DNA and cDNA (p = 0.49)
-
-#### ORDINATION
-set.seed(87)
-KO.water.tss.bray.ord <- metaMDS(KO.water.tss.bray, k= 2, try= 20, trymax= 1000, autotransform = F)
-
-#Extract ordination coordinates, add metadata
-KO.water.tss.bray.plot <- ordiplot(KO.water.tss.bray.ord$points)
-#Extract the scores (coordinates) of the points from the ordination plot object 
-KO.water.tss.bray.scrs <- scores(KO.water.tss.bray.plot, display = "sites") 
-#This step creates a new data frame that includes both the ordination scores (MDS) and additional metadata
-KO.water.tss.bray.scrs <- cbind(as.data.frame(KO.water.tss.bray.scrs), 
-                               gen_material = KO.water.tss.df$gen_material, 
-                               feedlot = factor(KO.water.tss.df$feedlot), 
-                               gen_material_spec_2 = KO.water.tss.df$gen_material_spec_2,
-                               sampleID = rownames(KO.water.tss.df))
-
-#####FEEDLOT EFFECT#####
-## BC
-KO.water.tss.bray.scrs #have coodrinates and metadata
-##Centroids according to feedlot
-KO.water.feedlot.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ feedlot, data = KO.water.tss.bray.scrs, FUN = mean) 
-KO.water.feedlot.tss.bray.segs <- merge(KO.water.tss.bray.scrs, 
-                                       setNames(KO.water.feedlot.tss.bray.cent, c("feedlot","cMDS1","cMDS2")),
-                                       by = 'feedlot', sort = F)
-
-# Extract R2 and p-values
-##Model gen_material and feedlot
-water_KO_BC_adonis #have the model
-R2_water_feedlot_KO_BC_adonis <- water_KO_BC_adonis$R2[2] 
-pvalue_water_feedlot_KO_BC_adonis<-water_KO_BC_adonis$`Pr(>F)`[2]
-
-#### PLOT
-water_feedlot_KO_BC_beta_div <- ggplot(KO.water.feedlot.tss.bray.segs) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "CATCH BASINS", color = "Feedlot") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  # stat_ellipse(geom= "polygon", aes (x= MDS1, y = MDS2, fill= color_gen_material, colour = color_gen_material), alpha = 0.2, lty = 2, linewidth = 1, level= 0.95)+
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = feedlot), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = feedlot), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = feedlot), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2, label= feedlot), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = feedlot_palette) +
-  theme(legend.position = "bottom",
-        legend.text = element_text(size = 22),
-        legend.title = element_text(size = 22, face = "bold"),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+  
-  guides(color = guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = 0.4, y = 0.6, ##change coordinates as needed
-           label = "Feedlot", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (feedlot)
-  annotate("text", x = 0.4, y = 0.6, ##change coordinates as needed
-           label = paste("R² = ", round(R2_water_feedlot_KO_BC_adonis * 100, 1), "%",
-                         "\np = ", round(pvalue_water_feedlot_KO_BC_adonis, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
-water_feedlot_KO_BC_beta_div 
-
-#####LIBRARY TYPE EFFECT#####
-## BC
-KO.water.tss.bray.scrs #have coordinates and metadata
-##Centroids according to gen_material (cDNA/DNA)
-KO.water.genmat.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ gen_material, 
-                                          data = KO.water.tss.bray.scrs, FUN = mean) 
-KO.water.genmat.tss.bray.segs <- merge(KO.water.tss.bray.scrs, 
-                                      setNames(KO.water.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)
-
-# Extract R2 and p-values for genmat
-water_KO_BC_adonis #have the model
-R2_water_KO_BC_adonis_genmat <- water_KO_BC_adonis$R2[1] 
-pvalue_water_KO_BC_adonis_genmat<-water_KO_BC_adonis$`Pr(>F)`[1]
-
-#### PLOT
-water_genmat_KO_BC_beta_div <- ggplot(KO.water.genmat.tss.bray.segs) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "CATCH BASINS",
-       color = "Library Type") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  # stat_ellipse(geom= "polygon", aes (x= MDS1, y = MDS2, fill= color_gen_material, colour = color_gen_material), alpha = 0.2, lty = 2, linewidth = 1, level= 0.95)+
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material), colour= "white", size = 3, fontface = "bold") +
-  scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
-  theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
-        legend.text = element_text(colour = "black", size = 22),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
-  guides(
-    color = guide_legend (override.aes = list(size = 7))
-  )+
-  annotate("text", x = 0.5, y = 0.6, ##change coordinates as needed
-           label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
-  annotate("text", x = 0.5, y = 0.6, ##change coordinates as needed
-           label = paste("R² = ", round(R2_water_KO_BC_adonis_genmat * 100, 1), "%",
-                         "\np = ", round(pvalue_water_KO_BC_adonis_genmat, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
-water_genmat_KO_BC_beta_div 
-
-
-####ONLY DNA (Feces vs CB)####
-##Subsetting only DNA samples
-KO.DNA.tss <- subset_samples(KO.tss_ps, gen_material=="DNA")
-KO.DNA.tss <- prune_taxa(taxa_sums(KO.DNA.tss) > 0, KO.DNA.tss) 
-KO.DNA.tss 
-
-##Distance matrix
-KO.DNA.tss.bray <- vegdist(t(KO.DNA.tss@otu_table), method = "bray") 
-KO.DNA.tss.df <- as(KO.DNA.tss@sam_data,"data.frame") # make DF from metadata
-
-#### ORDINATION
-set.seed(87)
-KO.DNA.tss.bray.ord <- metaMDS(KO.DNA.tss.bray, k= 2, try= 20, trymax= 1000, autotransform = F)
-
-##Get ordination coordinates
-KO.DNA.tss.bray.plot <- ordiplot(KO.DNA.tss.bray.ord$points)
-#Extracts the scores (coordinates) of the points from the ordination plot object:
-KO.DNA.tss.bray.scrs <- scores(KO.DNA.tss.bray.plot, display = "sites") 
-#This step creates a new data frame that includes both the ordination scores (MDS) and additional metadata:
-KO.DNA.tss.bray.scrs <- cbind(as.data.frame(KO.DNA.tss.bray.scrs), 
-                              sample_type = KO.DNA.tss.df$sample_type, 
-                              feedlot = factor(KO.DNA.tss.df$feedlot)) 
-#####PERMANOVA########
-#Is there an interaction with feedlot?
-set.seed(87)
-DNA_KO_BC_adonis_interaction  <- adonis2(KO.DNA.tss.bray ~ sample_type*feedlot,
-                                         by = "margin",
-                                         KO.DNA.tss.df, permutations = 9999)
-DNA_KO_BC_adonis_interaction  #Yes
-
-#Modelling sample type and feedlot
-set.seed(87)
-DNA_KO_BC_adonis_sampletype_feedlot  <- adonis2(KO.DNA.tss.bray ~ sample_type + feedlot, 
-                                     #strata = KO.DNA.tss.df$feedlot, 
-                                     by = "margin",
-                                     KO.DNA.tss.df, 
-                                     permutations = 9999)
-DNA_KO_BC_adonis_sampletype_feedlot #49.5% of variation is due to sample type (Water vs Feces) p = 1e-04
-#2.9% of the variation due to feedlot, p = 0.0160
-
-
-
-#PERMDISP - Sample type
-# Run the betadisper function, average distance to centroid
-bray.DNA.sampletype.disp.KO <- betadisper(KO.DNA.tss.bray, KO.DNA.tss.df$sample_type)
-bray.DNA.sampletype.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.DNA.sampletype.permdisp.KO <- permutest(bray.DNA.sampletype.disp.KO, permutations = 9999)
-bray.DNA.sampletype.permdisp.KO 
-##Feces vs Water p-value 1e-04
-
-#PERMDISP - Feedlot
-# Run the betadisper function, average distance to centroid
-bray.DNA.feedlot.disp.KO <- betadisper(KO.DNA.tss.bray, KO.DNA.tss.df$feedlot)
-bray.DNA.feedlot.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.DNA.feedlot.permdisp.KO <- permutest(bray.DNA.feedlot.disp.KO, permutations = 9999)
-bray.DNA.feedlot.permdisp.KO 
-##Not significant for feedlots (p = 0.9)
-
-#####ADDING CENTROIDS FOR PLOTTING - SAMPLE TYPE#######
-## BC
-KO.DNA.tss.bray.cent.sample_type <- aggregate(cbind(MDS1,MDS2) ~ sample_type, data = KO.DNA.tss.bray.scrs, FUN = mean) ##Centroids according to sample type (water and feces)
-KO.DNA.tss.bray.segs.sample_type <- merge(KO.DNA.tss.bray.scrs, 
-                                          setNames(KO.DNA.tss.bray.cent.sample_type, 
-                                                   c("sample_type", "cMDS1","cMDS2")), by = 'sample_type', sort = F) ##add centroids to main scrs dataframe
-
-##Abbreviated version of sample_type for easier plotting
-KO.DNA.tss.bray.segs.sample_type  <- KO.DNA.tss.bray.segs.sample_type  %>%
-  mutate(sample_type.abbrv = dplyr::recode(sample_type, "Water"= "CB", "Feces"= "F"))
-
-# Extract R2 and p-values
-R2_DNA_adonis_sample_type <- DNA_KO_BC_adonis_sampletype_feedlot$R2[1] 
-pvalue_DNA_adonis_sample_type<-  DNA_KO_BC_adonis_sampletype_feedlot$`Pr(>F)`[1]
-
-######SAMPLE TYPE EFFECT#####
-DNA_KO_BC_beta_div_spider_sampletype <- ggplot(KO.DNA.tss.bray.segs.sample_type) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "Metagenomic libraries (DNA)", color = "Sample type") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = sample.type.palette,
-                     labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
-  theme(legend.position = "bottom",
-        legend.title = element_text(colour = "black", size = 22, face = "bold"),
-        legend.text = element_text(colour = "black", size = 22),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
-  guides(
-    color= guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = 1.2, y = 0.3, ##change coordinates as needed
-           label = "Sample type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = 1.2, y = 0.3, ##change coordinates as needed
-           label = paste0("R² = ", round(R2_DNA_adonis_sample_type * 100, 1), "%",
-                          "\np = ", round(pvalue_DNA_adonis_sample_type, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values 
-DNA_KO_BC_beta_div_spider_sampletype
-
-######FEEDLOT EFFECT#######
-## BC
-KO.DNA.tss.bray.scrs #Already have the ordination coordinates with metadata
-KO.DNA.tss.bray.cent.feedlot <- aggregate(cbind(MDS1,MDS2) ~ feedlot, data = KO.DNA.tss.bray.scrs, 
-                                          FUN = mean) ##Centroids according to feedlot
-KO.DNA.tss.bray.segs.feedlot <- merge(KO.DNA.tss.bray.scrs, 
-                                      setNames(KO.DNA.tss.bray.cent.feedlot, c("feedlot", "cMDS1","cMDS2")), 
-                                      by = 'feedlot', 
-                                      sort = F) ##add centroids to main scrs dataframe
-
-# Extract R2 and p-values
-R2_DNA_adonis_feedlot <- DNA_KO_BC_adonis_sampletype_feedlot$R2[2] 
-pvalue_DNA_adonis_feedlot<-  DNA_KO_BC_adonis_sampletype_feedlot$`Pr(>F)`[2]
-
-#Plot
-DNA_KO_BC_beta_div_spider_feedlot <- ggplot(KO.DNA.tss.bray.segs.feedlot) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "Metagenomic libraries (DNA)", 
-       color = "Feedlot") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = feedlot), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = feedlot), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = feedlot), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= feedlot), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = feedlot_palette) + 
-  theme(legend.position = "bottom",
-        legend.text = element_text(colour = "black", size = 22, face = "bold"),
-        legend.title = element_text(colour = "black", size = 22, face = "bold"),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
-  guides(
-    color= guide_legend(override.aes = list(size = 7))
-  )+
-  annotate("text", x = 1, y = 0.4, ##change coordinates as needed
-           label = "Feedlot",
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = 1, y = 0.4, ##change coordinates as needed
-           label = paste0("R² = ", round(R2_DNA_adonis_feedlot * 100, 1), "%",
-                          "\np = ", round(pvalue_DNA_adonis_feedlot, 4)),
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
-
-DNA_KO_BC_beta_div_spider_feedlot
-
-####ONLY cDNA (CB vs feces)#############
-##Subsetting only cDNA samples
-KO.cDNA.tss <- subset_samples(KO.tss_ps, gen_material=="cDNA")
-KO.cDNA.tss <- prune_taxa(taxa_sums(KO.cDNA.tss) > 0, KO.cDNA.tss) 
-KO.cDNA.tss 
-
-##Distance matrix
-KO.cDNA.tss.bray <- vegdist(t(KO.cDNA.tss@otu_table), method = "bray") 
-KO.cDNA.tss.df <- as(KO.cDNA.tss@sam_data,"data.frame") # make DF from metadata
-
-#### ORDINATION
-set.seed(87)
-KO.cDNA.tss.bray.ord <- metaMDS(KO.cDNA.tss.bray, k= 2, try= 20, trymax= 1000, autotransform = F)
-
-##Get ordination coordinates
-KO.cDNA.tss.bray.plot <- ordiplot(KO.cDNA.tss.bray.ord$points)
-#Extracts the scores (coordinates) of the points from the ordination plot object:
-KO.cDNA.tss.bray.scrs <- scores(KO.cDNA.tss.bray.plot, display = "sites") 
-#This step creates a new data frame that includes both the ordination scores (MDS) and additional metadata:
-KO.cDNA.tss.bray.scrs <- cbind(as.data.frame(KO.cDNA.tss.bray.scrs), 
-                                  sample_type = KO.cDNA.tss.df$sample_type, 
-                                  feedlot = factor(KO.cDNA.tss.df$feedlot)) 
-#####PERMANOVA########
-#Is there an interaction with feedlot?
-set.seed(87)
-cDNA_KO_BC_adonis_interaction  <- adonis2(KO.cDNA.tss.bray ~ sample_type*feedlot,
-                                         by = "margin",
-                                         KO.cDNA.tss.df, permutations = 9999)
-cDNA_KO_BC_adonis_interaction  #Yes
-
-#Sample type and feedlot in model
-set.seed(87)
-cDNA_KO_BC_adonis_sampletype_feedlot  <- adonis2(KO.cDNA.tss.bray ~ sample_type + feedlot, 
-                                        by = "margin",
-                                        KO.cDNA.tss.df, 
-                                        permutations = 9999)
-cDNA_KO_BC_adonis_sampletype_feedlot #47.2% of the varaition is due to sample type, p = 0.001
-#3% of the variation due to feedlot
-
-
-#PERMDISP - Sample type
-# Run the betadisper function, average distance to centroid
-bray.cDNA.sampletype.disp.KO <- betadisper(KO.cDNA.tss.bray, KO.cDNA.tss.df$sample_type)
-bray.cDNA.sampletype.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.cDNA.sampletype.permdisp.KO <- permutest(bray.cDNA.sampletype.disp.KO, permutations = 9999)
-bray.cDNA.sampletype.permdisp.KO 
-##Feces vs Water p-value 1e-04
-
-#PERMDISP - Feedlot
-# Run the betadisper function, average distance to centroid
-bray.cDNA.feedlot.disp.KO <- betadisper(KO.cDNA.tss.bray, KO.cDNA.tss.df$feedlot)
-bray.cDNA.feedlot.disp.KO
-##Then test by permuting
-set.seed(87)
-bray.cDNA.feedlot.permdisp.KO <- permutest(bray.cDNA.feedlot.disp.KO, permutations = 9999)
-bray.cDNA.feedlot.permdisp.KO 
-##Not significant for feedlots (p = 0.9)
-
-#####SAMPLE TYPE EFFECT#######
-## BC
-KO.cDNA.tss.bray.cent.sample_type <- aggregate(cbind(MDS1,MDS2) ~ sample_type, data = KO.cDNA.tss.bray.scrs, FUN = mean) ##Centroids according to sample type (water and feces)
-KO.cDNA.tss.bray.segs.sample_type <- merge(KO.cDNA.tss.bray.scrs, 
-                                              setNames(KO.cDNA.tss.bray.cent.sample_type, 
-                                                       c("sample_type", "cMDS1","cMDS2")), by = 'sample_type', sort = F) ##add centroids to main scrs dataframe
-
-##Abbreviated version of sample_type for easier plotting
-KO.cDNA.tss.bray.segs.sample_type  <- KO.cDNA.tss.bray.segs.sample_type  %>%
-  mutate(sample_type.abbrv = dplyr::recode(sample_type, "Water"= "CB", "Feces"= "F"))
-
-# Extract R2 and p-values
-R2_cDNA_adonis_sample_type_KO <- cDNA_KO_BC_adonis_sampletype_feedlot$R2[1] 
-pvalue_cDNA_adonis_sample_type_KO<-cDNA_KO_BC_adonis_sampletype_feedlot$`Pr(>F)`[1]
-
-#Plot
-cDNA_BC_KO_beta_div_spider_sampletype <- ggplot(KO.cDNA.tss.bray.segs.sample_type) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "Metatranscriptomic libraries (RNA (cDNA))", color = "Sample type") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = sample.type.palette,
-                     labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
-  theme(legend.position = "bottom",
-        legend.title = element_text(colour = "black", size = 22, face = "bold"),
-        legend.text = element_text(colour = "black", size = 22),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
-  guides(
-    color= guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = 1.2, y = 0.3, ##change coordinates as needed
-           label = "Sample type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = 1.2, y = 0.3, ##change coordinates as needed
-           label = paste0("R² = ", round(R2_cDNA_adonis_sample_type_KO * 100, 1), "%",
-                          "\np = ", round(pvalue_cDNA_adonis_sample_type_KO, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values 
-cDNA_BC_KO_beta_div_spider_sampletype
-
-#####FEEDLOT EFFECT#######
-## BC
-KO.cDNA.tss.bray.scrs #Already have the ordination coordinates with metadata
-KO.cDNA.tss.bray.cent.feedlot <- aggregate(cbind(MDS1,MDS2) ~ feedlot, data = KO.cDNA.tss.bray.scrs, 
-                                              FUN = mean) ##Centroids according to feedlot
-KO.cDNA.tss.bray.segs.feedlot <- merge(KO.cDNA.tss.bray.scrs, 
-                                          setNames(KO.cDNA.tss.bray.cent.feedlot, c("feedlot", "cMDS1","cMDS2")), 
-                                          by = 'feedlot', 
-                                          sort = F) ##add centroids to main scrs dataframe
-
-# Extract R2 and p-values
-R2_cDNA_adonis_feedlot_KO <- cDNA_KO_BC_adonis_sampletype_feedlot$R2[2] 
-pvalue_cDNA_adonis_feedlot_KO<-  cDNA_KO_BC_adonis_sampletype_feedlot$`Pr(>F)`[2]
-
-#Plot
-cDNA_BC_KO_beta_div_spider_feedlot <- ggplot(KO.cDNA.tss.bray.segs.feedlot) + theme_bw() +
-  labs(x="NMDS1", y="NMDS2", title= "Metatranscriptomic libraries (RNA (cDNA))", 
-       color = "Feedlot") +
-  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
-  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
-  geom_segment(aes(x=cMDS1, y=cMDS2,
-                   xend= MDS1, yend = MDS2,
-                   color = feedlot), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = feedlot), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = feedlot), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= feedlot), colour= "white", size = 5, fontface = "bold") +
-  scale_color_manual(values = feedlot_palette) + 
-  theme(legend.position = "bottom",
-        legend.text = element_text(colour = "black", size = 22, face = "bold"),
-        plot.title = element_text(size = 36),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(colour = "black", linewidth = 1),
-        axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
-  annotate("text", x = 1.65, y = 0.9, ##change coordinates as needed
-           label = "Feedlot",
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = 1.65, y = 0.9, ##change coordinates as needed
-           label = paste0("R² = ", round(R2_cDNA_adonis_feedlot_KO * 100, 1), "%",
-                          "\np = ", round(pvalue_cDNA_adonis_feedlot_KO, 4)),
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") +# Annotate R² and p-values
-  guides(
-    color= guide_legend(override.aes = list(size = 7))
-  )
-cDNA_BC_KO_beta_div_spider_feedlot
-
 ###PATHWAYS#####
 ####ONLY FECES#######
 ##Subsetting only feces samples
@@ -1231,32 +580,34 @@ feces_genmat_pathways_BC_beta_div <- ggplot(pathways.feces.genmat.tss.bray.segs)
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
+  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), 
-            colour= "white", size = 3, fontface = "bold") +
+            colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
                      labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+  scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
+  scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
+        legend.title = element_text(colour = "black", size = 22, face = "bold"),
         legend.text = element_text(colour = "black", size = 22),
         plot.title = element_text(size = 36),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color = guide_legend (override.aes = list(size = 7))
   )+
   annotate("text", x = 0.15, y = 0.1, ##change coordinates as needed
            label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
   annotate("text", x = 0.15, y = 0.1, ##change coordinates as needed
            label = paste("R² = ", round(R2_feces_pathways_BC_adonis_genmat * 100, 1), "%",
                          "\np = ", round(pvalue_feces_pathways_BC_adonis_genmat, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 feces_genmat_pathways_BC_beta_div 
 
 ####ONLY CATCH BASINS (DNA vs cDNA)####
@@ -1416,31 +767,33 @@ water_genmat_pathways_BC_beta_div <- ggplot(pathways.water.genmat.tss.bray.segs)
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = gen_material), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 10) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 3, fontface = "bold") +
+  geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
+  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
                      labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+  scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
+  scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
-        legend.title= element_text(colour = "black", size = 22, face = "bold"),
+        legend.title = element_text(colour = "black", size = 22, face = "bold"),
         legend.text = element_text(colour = "black", size = 22),
         plot.title = element_text(size = 36),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 16, colour = "black")) +
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color = guide_legend (override.aes = list(size = 7))
   )+
   annotate("text", x = 0.25, y = 0.2, ##change coordinates as needed
            label = "Library Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable (Library Type)
   annotate("text", x = 0.25, y = 0.2, ##change coordinates as needed
            label = paste("R² = ", round(R2_water_pathways_BC_adonis_genmat * 100, 1), "%",
                          "\np = ", round(pvalue_water_pathways_BC_adonis_genmat, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values
 water_genmat_pathways_BC_beta_div 
 
 
@@ -1535,8 +888,8 @@ DNA_pathways_BC_beta_div_spider_sampletype <- ggplot(pathways.DNA.tss.bray.segs.
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
+  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
   scale_color_manual(values = sample.type.palette,
                      labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -1548,17 +901,17 @@ DNA_pathways_BC_beta_div_spider_sampletype <- ggplot(pathways.DNA.tss.bray.segs.
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color= guide_legend(override.aes = list(size = 7)))+
   annotate("text", x = 0.15, y = 0.12, ##change coordinates as needed
            label = "Sample Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable
   annotate("text", x = 0.15, y = 0.12, ##change coordinates as needed
            label = paste0("R² = ", round(R2_DNA_adonis_sample_type * 100, 1), "%",
                           "\np = ", round(pvalue_DNA_adonis_sample_type, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values 
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values 
 DNA_pathways_BC_beta_div_spider_sampletype
 
 
@@ -1701,8 +1054,8 @@ cDNA_BC_pathways_beta_div_spider_sampletype <- ggplot(pathways.cDNA.tss.bray.seg
   geom_segment(aes(x=cMDS1, y=cMDS2,
                    xend= MDS1, yend = MDS2,
                    color = sample_type), show.legend = F)+
-  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 5, alpha = 0.8) + # individuals
-  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 10) + # centroids
+  geom_point(aes(x=MDS1, y=MDS2, colour = sample_type), size = 6, alpha = 0.8) + # individuals
+  geom_point(aes(x=cMDS1, y= cMDS2, colour = sample_type), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= sample_type.abbrv), colour= "white", size = 5, fontface = "bold") +
   scale_color_manual(values = sample.type.palette,
                      labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -1714,17 +1067,17 @@ cDNA_BC_pathways_beta_div_spider_sampletype <- ggplot(pathways.cDNA.tss.bray.seg
         panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", linewidth = 1),
         axis.ticks = element_line(colour = "black", linewidth = 0.75),
-        axis.title = element_text(size = 28),
-        axis.text = element_text(size = 20, colour = "black"))+
+        axis.title = element_text(size = 30),
+        axis.text = element_text(size = 30, colour = "black"))+
   guides(
     color= guide_legend(override.aes = list(size = 7)))+
-  annotate("text", x = 0.15, y = 0.1, ##change coordinates as needed
+  annotate("text", x = -0.12, y = 0.12, ##change coordinates as needed
            label = "Sample Type", 
-           hjust = 0.5, vjust = -0.5, size = 6, colour = "black", fontface = "bold") + ##annotate variable
-  annotate("text", x = 0.15, y = 0.1, ##change coordinates as needed
+           hjust = 0.5, vjust = -0.5, size = 10, colour = "black", fontface = "bold") + ##annotate variable
+  annotate("text", x = -0.12, y = 0.12, ##change coordinates as needed
            label = paste0("R² = ", round(R2_cDNA_adonis_sample_type_pathways * 100, 1), "%",
                           "\np = ", round(pvalue_cDNA_adonis_sample_type_pathways, 4)), 
-           hjust = 0.5, vjust = 1.1, size = 6, colour = "black") # Annotate R² and p-values 
+           hjust = 0.5, vjust = 1.1, size = 10, colour = "black") # Annotate R² and p-values 
 cDNA_BC_pathways_beta_div_spider_sampletype
 
 #####FEEDLOT EFFECT#######
@@ -1783,59 +1136,54 @@ DNA_pathways_BC_beta_div_spider_sampletype
 cDNAandDNA_BC_pathways_beta_div_spider_sampletype <- ggarrange(
   DNA_pathways_BC_beta_div_spider_sampletype + 
     theme(
-          # plot.title = element_text(size = 35),
-          plot.title = element_blank(),
-          axis.title = element_text(size = 20)),
-  cDNA_BC_pathways_beta_div_spider_sampletype +
-    theme(      
-      # plot.title = element_text(size = 35),
       plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
+      axis.title = element_text(size = 30)),
+  cDNA_BC_pathways_beta_div_spider_sampletype +
+    theme(
+      plot.title = element_blank(),
+      axis.title = element_text(size = 30)),
   align = "h",
-  nrow = 1,
-  labels = c("G", "H"),
-  font.label = list(size = 30),
+  nrow= 1,
   common.legend = TRUE,
-  legend = "none")
+  labels = c("D", "E"),
+  font.label = list(size = 40),
+  legend = "none"
+)
 cDNAandDNA_BC_pathways_beta_div_spider_sampletype
 
 ##DNA and cDNA ordination plots - Figure 4GH
-figure4GH <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
-figure4GH
+figure4DE <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
+figure4DE
 
 
-
-####FIGURE 7GH - EMPHASIS ON LIBRARY TYPE #######
+####FIGURE 6EF - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
 water_genmat_pathways_BC_beta_div 
-feces_genmat_pathways_BC_beta_div 
+feces_genmat_pathways_BC_beta_div
 
+#Put them together
 WaterandFeces_pathways_beta_div_spider_genmat <- ggarrange(
   feces_genmat_pathways_BC_beta_div + 
     theme(
-      # plot.title = element_text(size = 35),
       plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
+      axis.title = element_text(size = 30)),
   water_genmat_pathways_BC_beta_div + 
     theme(
-      # plot.title = element_text(size = 35),
       plot.title = element_blank(),
-      axis.title = element_text(size = 20)),
+      axis.title = element_text(size = 30)),
   align = "h",
   nrow = 1,
   common.legend = TRUE,
-  labels = c("G", "H"),
-  font.label = list(size = 30),
-  legend = "none")
+  labels = c("E", "F"),
+  font.label = list(size = 35),
+  legend = "none"
+)
 WaterandFeces_pathways_beta_div_spider_genmat
-
-##DNA and cDNA ordination plots - Figure 7GH
-figure7GH <- WaterandFeces_pathways_beta_div_spider_genmat
-figure7GH
+figure6EF <- WaterandFeces_pathways_beta_div_spider_genmat
 
 
-####SUPPLEMENTARY FIGURE 6EF#######
+####SUPPLEMENTARY FIGURE 10EF#######
 #####Effect of feedlot On DNA and cDNA#####
-sfigure6EandF <- ggarrange(DNA_pathways_BC_beta_div_spider_feedlot+
+sfigure10EandF <- ggarrange(DNA_pathways_BC_beta_div_spider_feedlot+
                              theme(plot.title = element_blank()), 
                            cDNA_BC_pathways_beta_div_spider_feedlot+
                              theme(plot.title = element_blank()),
@@ -1845,15 +1193,14 @@ sfigure6EandF <- ggarrange(DNA_pathways_BC_beta_div_spider_feedlot+
                            common.legend = T)
   # labs(title = "FUNCTIONAL PATHWAYS")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-sfigure6EandF
+sfigure10EandF
 
-
-####SUPPLEMENTARY FIGURE 7EF#######
+####SUPPLEMENTARY FIGURE 11EF#######
 #####Effect of feedlot On Feces and CB#####
 fecespathways_feedlot_BC_beta_div 
 water_feedlot_pathways_BC_beta_div 
 
-sfigure7EandF <- ggarrange(fecespathways_feedlot_BC_beta_div+
+sfigure11EandF <- ggarrange(fecespathways_feedlot_BC_beta_div+
                              theme(plot.title = element_blank()),
                            water_feedlot_pathways_BC_beta_div+
                              theme(plot.title = element_blank()),
@@ -1863,7 +1210,8 @@ sfigure7EandF <- ggarrange(fecespathways_feedlot_BC_beta_div+
                            common.legend = T)
   # labs(title = "FUNCTIONAL PATHWAYS")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-sfigure7EandF
+sfigure11EandF
+
 
 
 ###SUPPLEMENTARY TABLE 5 - PATHWAYS SECTION#######
@@ -1873,8 +1221,6 @@ stable5_pathways <- bind_rows(stable5.13,
                               stable5.16)%>%  
   select(Dataset, `Library Type`, `Sample Type`, `Fixed Effect`, Df, SumOfSqs, R2, `F`, `Pr(>F)`)
 stable5_pathways
-write_xlsx(stable5_pathways, 
-           "/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryTable5_3.xlsx")
 
 #DIFFERENTIAL ABUNDANCE - Pathways####
 ##DNA (Feces vs Water)#######
@@ -2115,16 +1461,6 @@ DA_pathways_DNA_plot_MaAslinANCOM <-
   geom_point(data=DA_DNA_pathways_together%>%filter(grepl("abundances", plot)),
              aes(x=pathway, y=logvalue, fill = sample_type, color = sample_type),
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
-  # facet_nested(. ~ plot, scales='free_x',
-  #              space='free_y',
-  #              switch='y',
-  #              strip=strip_nested(text_y=list(element_text(angle=0))),
-  #              labeller=labeller(group=label_wrap_gen(width=10),
-  #                                sub_group=label_wrap_gen(width=10))) +
-  # ggplot(data=DA_DNA_pathways_together%>%filter(grepl("abundances", plot)),
-  #        aes(x=pathway, y=logvalue, fill = sample_type, color = sample_type)) +
-  # geom_boxplot(notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
-  # geom_point(size = 1, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Sample Type", title.position="top"),
          fill=guide_legend(order = 1,title="Sample Type", title.position="top"))+
   scale_fill_manual(values=sample.type.palette, 
@@ -2148,7 +1484,10 @@ DA_pathways_DNA_plot_MaAslinANCOM <-
   # scale_x_discrete(position='bottom',
   #                  labels = function(x) str_wrap(x, width = 60))+
   scale_x_discrete(position='bottom', labels = function(x) str_wrap(x, width = 40))+
-  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  scale_y_continuous(
+    position='right',
+    breaks = function(x) unique(floor(pretty(x))),
+    labels = function(x) sprintf("%.0f", x))+
   coord_flip() +
   scale_color_manual(values=c("red", "blue")) +
   scale_linetype_manual(values=c("11", "solid")) +
@@ -2163,15 +1502,16 @@ DA_pathways_DNA_plot_MaAslinANCOM <-
   theme_bw()+
   theme(legend.position="top", 
         legend.key=element_blank(),
-        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        legend.title=element_text(size=26), 
+        legend.text=element_text(size=14),
         plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
         plot.title.position = "plot",
         axis.title.x=element_blank(), 
-        axis.text.x=element_text(size=15),
+        axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
-        axis.title.y=element_text(size= 20, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=18, vjust = 0.5),
-        strip.text=element_text(size=13, color = "white", face = "bold"),
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
@@ -2400,7 +1740,6 @@ top_negative_fold_changes_cDNA <- DA_cDNA_pathways_together %>%
   tail(n = 8) #top 4
 top_negative_fold_changes_cDNA 
 
-
 ###PLOTTING DA#
 #Plotting 
 DA_pathways_cDNA_plot_MaAslinANCOM <-
@@ -2415,16 +1754,6 @@ DA_pathways_cDNA_plot_MaAslinANCOM <-
   geom_point(data=DA_cDNA_pathways_together%>%filter(grepl("abundances", plot)),
              aes(x=pathway, y=logvalue, fill = sample_type, color = sample_type),
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
-  # facet_nested(. ~ plot, scales='free_x',
-  #              space='free_y',
-  #              switch='y',
-  #              strip=strip_nested(text_y=list(element_text(angle=0))),
-  #              labeller=labeller(group=label_wrap_gen(width=10),
-  #                                sub_group=label_wrap_gen(width=10))) +
-  # ggplot(data=DA_cDNA_pathways_together%>%filter(grepl("abundances", plot)),
-  #        aes(x=pathway, y=logvalue, fill = sample_type, color = sample_type)) +
-  # geom_boxplot(notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
-  # geom_point(size = 1, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Sample Type", title.position="top"),
          fill=guide_legend(order = 1,title="Sample Type", title.position="top"))+
   scale_fill_manual(values=sample.type.palette, 
@@ -2446,7 +1775,10 @@ DA_pathways_cDNA_plot_MaAslinANCOM <-
              size=0.5, linetype='dashed'
              , alpha=0.5) +
   scale_x_discrete(position='bottom', labels = function(x) str_wrap(x, width = 40))+
-  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  scale_y_continuous(
+    position='right',
+    breaks = function(x) unique(floor(pretty(x))),
+    labels = function(x) sprintf("%.0f", x))+
   coord_flip() +
   labs(title = "Metatranscriptomic libraries (RNA (cDNA))" , x = "Functional Pathway")+
   scale_color_manual(values=c("red", "blue")) +
@@ -2461,15 +1793,16 @@ DA_pathways_cDNA_plot_MaAslinANCOM <-
   theme_bw()+
   theme(legend.position="top", 
         legend.key=element_blank(),
-        legend.title=element_text(size=15), legend.text=element_text(size=14),
+        legend.title=element_text(size=26), 
+        legend.text=element_text(size=24),
         plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
         plot.title.position = "plot",
         axis.title.x=element_blank(), 
-        axis.text.x=element_text(size=15),
+        axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
-        axis.title.y=element_text(size= 20, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=18, vjust = 0.5),
-        strip.text=element_text(size=13, color = "white", face = "bold"),
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
@@ -2486,26 +1819,19 @@ figure5EandF <-plot_grid(DA_pathways_DNA_plot_MaAslinANCOM+
                            theme(plot.title = element_blank(),
                                  legend.position = "none",
                                  axis.title.y = element_blank(),
-                                 axis.text.x=element_text(size=12)
-                                 # strip.text = element_blank(),
-                                 # strip.background = element_rect(fill = "white")
                                  ), 
                          DA_pathways_cDNA_plot_MaAslinANCOM+
                            theme(plot.title = element_blank(),
                                  legend.position = "none",
                                  axis.title.y = element_blank(),
-                                 axis.text.x=element_text(size=12)
-                                 # strip.text = element_blank(),
-                                 # strip.background = element_rect(fill = "white")
                                  ), 
                          align = "v",
                          labels = c("E", "F"),
                          label_size = 32,
                          ncol = 1,
-                         rel_heights = c(0.75, 0.35)
+                         rel_heights = c(0.8, 0.3)
                          )
-  # labs(title = "FUNCTIONAL PATHWAYS")+
-  # theme(plot.title = element_text(size = 40, face = "bold"))
+
 figure5EandF
 
 
@@ -2709,39 +2035,8 @@ DA_feces_pathways_together <- bind_rows(DA_feces_pathways_MaAslinANCOM.data, fec
 DA_feces_pathways_together$plot <- factor(DA_feces_pathways_together$plot, levels = c("Log2 Fold change with 95%CI", "log(Bias-corrected abundances)", 'log2(Relative abundances)'))
 DA_feces_pathways_together$gen_material <- factor(DA_feces_pathways_together$gen_material, levels = c("DNA", "cDNA"))
 
-#Which are the biggest fold changes?
-DA_feces_pathways_together %>%
-  filter(!is.na(test)) %>%
-  # get the max coef per pathway for ordering
-  group_by(pathways_family) %>%
-  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
-  ungroup() %>%
-  arrange(desc(max_coef), pathways_family, test)
-
-
-####Which are the biggest positive fold changes?#######
-top_positive_fold_changes_feces <- DA_feces_pathways_together %>%
-  filter(!is.na(test)) %>%
-  # get the max coef per pathway for ordering
-  group_by(pathways_family) %>%
-  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
-  ungroup() %>%
-  arrange(desc(max_coef), pathways_family, test) %>%
-  head(n = 20) #top 10 
-top_positive_fold_changes_feces
-
-####Which are the biggest negative fold changes?#######
-top_negative_fold_changes_feces<- DA_feces_pathways_together %>%
-  filter(!is.na(test)) %>%
-  # get the max coef per pathway for ordering
-  group_by(pathways_family) %>%
-  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
-  ungroup() %>%
-  arrange(desc(max_coef), pathways_family, test) %>%
-  tail(n = 16) #top 8
-top_negative_fold_changes_feces
-
-#Plotting 
+####Plotting Differential Abundance#######
+#####All DA Pathways#######
 DA_fecespathways_plot_MaAslinANCOM <-
   ggplot(data = DA_feces_pathways_together) +
   facet_wrap(~ plot, scales='free_x',
@@ -2815,6 +2110,177 @@ DA_fecespathways_plot_MaAslinANCOM <-
         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
         panel.grid.minor = element_blank())
 DA_fecespathways_plot_MaAslinANCOM
+
+
+#####Only largest positive and negative fold changes#####
+######Which are the largest positive fold changes?#######
+DA_feces_pathways_together %>%
+  filter(direction == "elevated", test == "MaAsLin3")%>%
+  nrow() #14 positive fold change 
+DA_feces_pathways_together %>%
+  filter(direction == "depleted", test == "MaAsLin3")%>%
+  nrow() #16 negative fold change 
+
+top_positive_fold_changes_feces <- DA_feces_pathways_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(pathways_family) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), pathways_family, test) %>%
+  head(n = 10) #top 5
+top_positive_fold_changes_feces
+
+######Which are the largest positive fold changes?#######
+top_negative_fold_changes_feces<- DA_feces_pathways_together %>%
+  filter(!is.na(test)) %>%
+  # get the max coef per pathway for ordering
+  group_by(pathways_family) %>%
+  mutate(max_coef = max(coef, na.rm = TRUE)) %>%
+  ungroup() %>%
+  arrange(desc(max_coef), pathways_family, test) %>%
+  tail(n = 10) #top 5
+top_negative_fold_changes_feces
+
+#Plot only largest fold changes
+DA_feces_pathways_together_largest_fold <- DA_feces_pathways_together%>%
+  filter(pathways_family %in% c(
+    unique(top_negative_fold_changes_feces$pathways_family),
+    unique(top_positive_fold_changes_feces$pathways_family)
+  ))
+DA_fecespathways_plot_MaAslinANCOM_largest_fold <-
+  ggplot(data = DA_feces_pathways_together_largest_fold) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_feces_pathways_together_largest_fold%>%filter(grepl("abundances", plot)),
+               aes(x=pathways_family, y=logvalue, 
+                   fill = gen_material, color = gen_material),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_feces_pathways_together_largest_fold%>%filter(grepl("abundances", plot)),
+             aes(x=pathways_family, y=logvalue, fill = gen_material, color = gen_material),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
+  scale_color_manual(values = gen.material.palette,
+                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  scale_fill_manual(values=gen.material.palette,
+                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  new_scale_color()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_feces_pathways_together_largest_fold%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=pathways_family, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_feces_pathways_together_largest_fold%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=pathways_family, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_feces_pathways_together_largest_fold%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  # scale_x_discrete(position='bottom',
+  #                  labels = function(x) str_wrap(x, width = 40))+
+  scale_x_discrete(position='bottom', labels = function(x) str_wrap(x, width = 52))+
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Library Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         shape=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  theme_bw()+
+  labs(title = "FECES", x = "Functional Pathway")+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=26), legend.text=element_text(size=24),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=19.8, vjust = 0.5),
+        strip.text=element_text(size=18, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_fecespathways_plot_MaAslinANCOM_largest_fold
+
+#####Groups that are not part of the positive and negative fold changes (supplementary)#####
+DA_feces_pathways_together_others <- DA_feces_pathways_together%>%
+  filter(!pathways_family %in% c(
+    unique(top_negative_fold_changes_feces$pathways_family),
+    unique(top_positive_fold_changes_feces$pathways_family)
+  ))
+
+DA_fecespathways_plot_MaAslinANCOM_others<-
+  ggplot(data = DA_feces_pathways_together_others) +
+  facet_wrap(~ plot, scales='free_x',
+             nrow = 1,
+             strip.position = "top") +
+  geom_boxplot(data=DA_feces_pathways_together_others%>%filter(grepl("abundances", plot)),
+               aes(x=pathways_family, y=logvalue, 
+                   fill = gen_material, color = gen_material),
+               notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
+  geom_point(data=DA_feces_pathways_together_others%>%filter(grepl("abundances", plot)),
+             aes(x=pathways_family, y=logvalue, fill = gen_material, color = gen_material),
+             size = 2, shape = 18, position = position_dodge(width = 0.75)) +
+  guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
+  scale_color_manual(values = gen.material.palette,
+                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  scale_fill_manual(values=gen.material.palette,
+                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+  new_scale_color()+
+  geom_errorbar(inherit.aes=FALSE,
+                data=DA_feces_pathways_together_others%>%filter(plot == 'Log2 Fold change with 95%CI'),
+                aes(x=pathways_family, ymin=lower.ci, ymax=upper.ci,
+                    color=direction, linetype=test),
+                width=0, position=position_dodge(0.75), size=0.75) +
+  geom_point(inherit.aes=FALSE,
+             data=DA_feces_pathways_together_others%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(x=pathways_family, y=coef, color=direction, pch=test),
+             position=position_dodge(0.75), size=3) +
+  geom_hline(data=DA_feces_pathways_together_others%>%filter(plot == 'Log2 Fold change with 95%CI'),
+             aes(yintercept=0),
+             size=0.5, linetype='dashed'
+             , alpha=0.5) +
+  # scale_x_discrete(position='bottom',
+  #                  labels = function(x) str_wrap(x, width = 40))+
+  scale_x_discrete(position='bottom', 
+                   labels = function(x) str_wrap(x, width = 40))+
+  scale_y_continuous(position='right') +  # Default to break_labels otherwise 
+  coord_flip() +
+  scale_color_manual(values=c("red", "blue")) +
+  scale_linetype_manual(values=c("11", "solid")) +
+  scale_shape_manual(values=c(16, 15)) +
+  guides(fill=guide_legend(order=1, title="Library Type", title.position="top"),
+         color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
+         linetype = guide_legend(title = "Fold change source", title.position = "top",
+                                 override.aes = list(linewidth = 1),
+                                 theme = theme(legend.key.width = unit(1.5, "cm"))),
+         shape=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
+  theme_bw()+
+  labs(title = "FECES", x = "Functional Pathway")+
+  theme(legend.position="top", legend.key=element_blank(),
+        legend.title=element_text(size=26), legend.text=element_text(size=24),
+        plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
+        plot.title.position = "plot",
+        axis.title.x=element_blank(), 
+        axis.text.x=element_text(size=20),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
+        axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
+        axis.text.y=element_text(size=26, vjust = 0.5),
+        strip.text=element_text(size=16, color = "white", face = "bold"),
+        strip.background=element_rect(fill='black'
+                                      , color='white'),
+        strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
+        panel.grid.minor = element_blank())
+DA_fecespathways_plot_MaAslinANCOM_others
 
 ##CATCH BASINS - DNA vs cDNA #####
 ###ANCOMBC#######
@@ -2989,142 +2455,34 @@ DA_water_pathways_MaAslinANCOM.data <- rbind(ancombc_output_water.pathways_pivot
                                   ancombc_output_water.pathways_pivot_3$pathways_family)) ##Only going to plot those taxa DA by both tests
 
 #STOPPING HERE SINCE THERE ARE NO DA PATHWAYS
-# ##BOX PLOTS OF RELATIVE ABUNDANCES (FOR MAASLIN) AND BIAS ADJUSTED ABUNDANCES (FOR ANCOM)
-# ##Calculate the RA of the Genera included in the  MaAslin and ANCOM analyses for each sample
-# RA_MaaslinAncom_water.pathways <- maaslin_water_pathwaysfamilies$transformed_data %>% #transformed data is ra transformed otu counts from MaAslin output
-#   rownames_to_column(var = "Sample")%>%
-#   pivot_longer(cols = -Sample, names_to = "pathways_family", values_to = "logvalue") %>%
-#   mutate(plot = 'log2(Relative abundances)') %>%
-#   #left_join(input_taxonomy_water, by = "feature")%>%
-#   filter(pathways_family %in% intersect(maaslin_water_pathwaysfamilies_3$pathways_family,
-#                                   ancombc_output_water.pathways_pivot_3$pathways_family))%>%
-#   left_join(metadata_maaslin_water%>% rownames_to_column(var = "Sample"), by = "Sample")%>%
-#   select(pathways_family, Sample, logvalue, gen_material, plot)
-# 
-# #Bias-corrected abundances (ANCOM)
-# ##Get sampling fractions
-# water.pathways_samp_frac <- ancombc_output_water.pathways$samp_frac
-# 
-# # Replace NA with 0 in sampling fractions
-# water.pathways_samp_frac[is.na(water.pathways_samp_frac)] <-  0
-# # Add pesudo-count (1) to avoid taking the log of 0,  then get log10 of feature_table
-# water.pathways_log_obs_abn <-  log(ancombc_output_water.pathways$feature_table + 1)
-# # Adjust the log observed abundances (for sampling fraction - bias)
-# water.pathways_log_corr_abn <- t(t(water.pathways_log_obs_abn) - water.pathways_samp_frac) %>%
-#   data.frame(check.names = F)%>% ##make into data frame
-#   rownames_to_column("pathways_family")%>%
-#   filter(pathways_family %in% intersect(maaslin_water_pathwaysfamilies_3$pathways_family,
-#                                   ancombc_output_water.pathways_pivot_3$pathways_family))%>% #keep only those pathways in both the ANCOM and MaAslin outputs
-#   pivot_longer(cols = -pathways_family, names_to = "Sample", values_to = "logvalue")%>% ##Pivot to longer data format
-#   mutate(plot = 'log(Bias-corrected abundances)',
-#          gen_material = ifelse(grepl("c", Sample), "cDNA", "DNA"))
-# 
-# #put together objects to plot DA
-# DA_water_pathways_together <- bind_rows(DA_water_pathways_MaAslinANCOM.data, 
-#                                         water.pathways_log_corr_abn, 
-#                                         RA_MaaslinAncom_water.pathways) ##This object will have DA values, bias-corrected abundances from ANCOM, and relative abundances)
-# DA_water_pathways_together$plot <- factor(DA_water_pathways_together$plot, levels = c("Log2 Fold change with 95%CI", "log(Bias-corrected abundances)", 'log2(Relative abundances)'))
-# DA_water_pathways_together$gen_material <- factor(DA_water_pathways_together$gen_material, levels = c("DNA", "cDNA"))
-# 
-# #Which are the biggest fold changes?
-# DA_water_pathways_together %>%
-#   filter(!is.na(test)) %>%
-#   # get the max coef per pathway for ordering
-#   group_by(pathways_family) %>%
-#   mutate(max_coef = max(coef, na.rm = TRUE)) %>%
-#   ungroup() %>%
-#   arrange(desc(max_coef), pathways_family, test)
-# 
-# #Plotting 
-# DA_waterpathways_plot_MaAslinANCOM <-
-#   ggplot(data = DA_water_pathways_together) +
-#   facet_wrap(~ plot, scales='free_x',
-#              nrow = 1,
-#              strip.position = "top") +
-#   # facet_nested(. ~ plot, scales='free_x',
-#   #              space='free_y',
-#   #              switch='y',
-#   #              strip=strip_nested(text_y=list(element_text(angle=0))),
-#   #              labeller=labeller(group=label_wrap_gen(width=10),
-#   #                                sub_group=label_wrap_gen(width=10))) +
-#   # ggplot(data=DA_water_pathways_together%>%filter(grepl("abundances", plot)),
-#   #        aes(x=pathways_family, y=logvalue, fill = gen_material, color = gen_material)) +
-#   # geom_boxplot(notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
-#   # geom_point(size = 1, shape = 18, position = position_dodge(width = 0.75)) +
-#   geom_boxplot(data=DA_water_pathways_together%>%filter(grepl("abundances", plot)),
-#                aes(x=pathways_family, y=logvalue, 
-#                    fill = gen_material, color = gen_material),
-#                notch=FALSE, outlier.size=0.5, size = 0.5, alpha = 0.3) +
-#   geom_point(data=DA_water_pathways_together%>%filter(grepl("abundances", plot)),
-#              aes(x=pathways_family, y=logvalue, fill = gen_material, color = gen_material),
-#              size = 1.5, shape = 18, position = position_dodge(width = 0.75)) +
-#   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
-#   scale_color_manual(values = gen.material.palette,
-#                      labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
-#   scale_fill_manual(values=gen.material.palette,
-#                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
-#   new_scale_color()+
-#   geom_errorbar(inherit.aes=FALSE,
-#                 data=DA_water_pathways_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
-#                 aes(x=pathways_family, ymin=lower.ci, ymax=upper.ci,
-#                     color=direction, linetype=test),
-#                 width=0, position=position_dodge(0.75), size=0.75) +
-#   geom_point(inherit.aes=FALSE,
-#              data=DA_water_pathways_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
-#              aes(x=pathways_family, y=coef, color=direction, pch=test),
-#              position=position_dodge(0.75), size=3) +
-#   geom_hline(data=DA_water_pathways_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
-#              aes(yintercept=0),
-#              size=0.5, linetype='dashed'
-#              , alpha=0.5) +
-#   # scale_x_discrete(position='bottom',
-#   #                  labels = function(x) str_wrap(x, width = 40))+
-#   scale_x_discrete(position='bottom')+
-#   scale_y_continuous(position='right') +  # Default to break_labels otherwise 
-#   coord_flip() +
-#   scale_color_manual(values=c("red", "blue")) +
-#   scale_linetype_manual(values=c("11", "solid")) +
-#   scale_shape_manual(values=c(16, 15)) +
-#   guides(fill=guide_legend(order=1, title="Library Type", title.position="top"),
-#          color=guide_legend(order=2, title="Fold change direction", title.position="top", override.aes = list(size = 2.5)),
-#          linetype = guide_legend(title = "Fold change source", title.position = "top",
-#                                  override.aes = list(linewidth = 1),
-#                                  theme = theme(legend.key.width = unit(1.5, "cm"))),
-#          shape=guide_legend(title="Fold change source", title.position="top", override.aes = list(size = 3))) +
-#   theme_bw()+
-#   labs(title = "CATCH BASINS", x = "Functional Pathway")+
-#   theme(legend.position="top", legend.key=element_blank(),
-#         legend.title=element_text(size=20), 
-#         legend.text=element_text(size=14),
-#         plot.title = element_text(size = 30, colour = "black", face = "bold", hjust = 0.5),
-#         plot.title.position = "plot",
-#         axis.title.x=element_blank(), 
-#         axis.text.x=element_text(size=10),
-#         axis.title.y=element_text(size= 20, face = "bold"), 
-#         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
-#         axis.text.y=element_text(size=16, vjust = 0.5),
-#         strip.text=element_text(size=16, color = "white", face = "bold"),
-#         strip.background=element_rect(fill='black'
-#                                       , color='white'),
-#         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
-#         panel.grid.minor = element_blank())
-# DA_waterpathways_plot_MaAslinANCOM
 
-####FIGURE 8 D - DA EMPHASIS ON DNA vs cDNA#####
+####FIGURE 7D - DA EMPHASIS ON DNA vs cDNA#####
 #Just feces had DA pathways
-DA_fecespathways_plot_MaAslinANCOM
+DA_fecespathways_plot_MaAslinANCOM_largest_fold
 
-figure8D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM+
+figure7D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM_largest_fold+
                          theme(plot.title = element_blank(),
                                legend.position = "none",
                                axis.title.y = element_blank(),
-                               # strip.text = element_blank(),
-                               # strip.background = element_rect(fill = "white")
                                ), 
                        align = "v", 
                        labels = c("D", " "),
-                       label_size = 32,
+                       label_size = 35,
                        ncol = 1)
 # labs(title = "FUNCTIONAL PATHWAYS")+
 # theme(plot.title = element_text(size = 40, face = "bold"))
-figure8D
+figure7D
+
+
+####SFIGURE9C -  DA EMPHASIS ON DNA vs cDNA - Feces not the largest logfold changes#####
+DA_fecespathways_plot_MaAslinANCOM_others
+
+sfigure9C <-plot_grid(DA_fecespathways_plot_MaAslinANCOM_others+
+                        theme(
+                        axis.title.y = element_blank(),
+                        plot.title = element_blank(),
+                        legend.position = "none"
+                        ),
+                      labels = c("C"),
+                      label_size = 35)
+sfigure9C
