@@ -624,7 +624,7 @@ kraken2_classification_percentage.WvsF<- ggplot(unclassified_counts_metadata,
        color = "Sample Type", fill = "Sample Type",
        title = "KRAKEN2 CLASSIFICATION") +
   facet_grid(~gen_material, scales = "free",  
-             labeller = as_labeller(c("cDNA" = "RNA (cDNA)", "DNA" = "DNA"))) +
+             labeller = as_labeller(c("cDNA" = "MTX", "DNA" = "MGX"))) +
   # facet_wrap(~gen_material) +
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
@@ -717,8 +717,8 @@ otu_counts_cDNAvDNA.WandF<- ggplot(data.bacteria.samples.df, aes(x = gen_materia
   facet_grid(~sample_type, scales = "free",  labeller = as_labeller(c("Feces" = "FECES", "Water" = "CATCH BASINS"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -746,7 +746,7 @@ sequencing_depth_WvF.cDNAandDNA<- ggplot(data.bacteria.samples.df, aes(x = sampl
   theme_bw() +
   labs(y= "OTUs per Sample", color = "Sample Type", fill = "Sample Type") +
   facet_grid(~gen_material, scales = "free",  
-             labeller = as_labeller(c("cDNA" = "RNA (cDNA)", "DNA" = "DNA"))) +
+             labeller = as_labeller(c("cDNA" = "MTX", "DNA" = "MGX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_fill_manual(values = sample.type.palette)+
@@ -1546,8 +1546,8 @@ alpha_div_emmeans_microbiome <- alpha_div_emmeans_microbiome%>%
          `P value` = format(p.value, scientific = TRUE, digits = 3))%>%
   mutate(across(where(is.character),
                 ~ str_replace_all(., c("Water" = "Catch Basins",
-                                       "cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                       "(?<!c)DNA" = "Metagenomic (DNA)", 
+                                       "cDNA" = "Metatranscriptomic (MTX)", 
+                                       "(?<!c)DNA" = "Metagenomic (MGX)", 
                                        "feedlot" = "Feedlot"))))%>% #"Match DNA only if it is NOT immediately preceded by c."
   select(Dataset, Metric, `Sample Type`, `Library Type`, Feedlot, Contrast, Estimate, SE, Df, `T ratio`, `P value`)
 alpha_div_emmeans_microbiome              
@@ -1633,7 +1633,7 @@ alpha_div_emmeans_WvsF_DNAandcDNA <- alpha_div_emmeans_data %>%
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
+                                      "DNA" = "MGX", 
                                       "cDNA" = "RNA\n(cDNA)")), 
              scales = "free")+
   theme_bw() +
@@ -1685,7 +1685,7 @@ alpha_div_emmeans_WvsF_DNAandcDNA_feedlot <- alpha_div_emmeans_data_WvsF_cDNAand
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
+                                      "DNA" = "MGX", 
                                       "cDNA" = "RNA\n(cDNA)", 
                                       "1" = "1",
                                       "2" = "2", 
@@ -1743,7 +1743,7 @@ alpha_div_emmeans_cDNAvsDNA_WandF <- alpha_div_emmeans_data %>%
                 position = position_dodge(width = 0.5), 
                 width = 0.2,
                 linewidth = 1.5) +
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_shape_manual(name = "Feedlot",
                      values = c(15,17,18,19, 12))+
   theme_bw() +
@@ -1798,7 +1798,7 @@ alpha_div_emmeans_cDNAvsDNA_WandF_feedlot <-
                 position = position_dodge(width = 0.5), 
                 width = 0.2,
                 linewidth = 1.5) +
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   theme_bw() +
   labs(title= "MICROBIOME", color = "Library Type") +
   facet_grid(alpha_div_metric ~ feedlot +sample_type ,
@@ -1857,8 +1857,8 @@ alpha_div_WvF.cDNAandDNA <- ggplot(alpha_div_meta_long, aes(x = sample_type, y= 
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
-                                      "cDNA" = "RNA (cDNA)"))) +
+                                      "DNA" = "MGX", 
+                                      "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_color_manual(values = sample.type.palette, labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -1900,8 +1900,8 @@ alpha_div_cDNAvsDNA.WandF <- ggplot(alpha_div_meta_long, aes(x = gen_material, y
                                       "Feces" = "FECES"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
         legend.title = element_text(size = 22, face = "bold"),
@@ -2008,7 +2008,7 @@ alpha_div_reseq <- ggplot(alpha_div_meta_long, aes(x = re_sequenced, y= alpha_di
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
                                       "cDNA" = "cDNA", 
-                                      "DNA" = "DNA"))) +
+                                      "DNA" = "MGX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_color_manual(values = batch_palette) +
@@ -2061,7 +2061,7 @@ cDNA_BC_adonis_sampletype_feedlot #Sample type and feedlot significant
 ##Using the model with sample type and feedlot
 stable5.6 <- data.frame(cDNA_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metatranscriptomic (RNA (cDNA))",
+         `Library Type` = "Metatranscriptomic (MTX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -2334,7 +2334,7 @@ DNA_BC_adonis_sampletype_feedlot #Yes
 ######SUPPLEMENTARY TABLE 5.5#######
 stable5.5 <- data.frame(DNA_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metagenomic (DNA)",
+         `Library Type` = "Metagenomic (MGX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -2667,7 +2667,7 @@ water_genmat_BC_beta_div <- ggplot(data.bacteria.samples.water.genmat.tss.bray.s
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material.recode), colour= "white", size = 4) +
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
@@ -2853,7 +2853,7 @@ feces_genmat_BC_beta_div <- ggplot(data.bacteria.samples.feces.genmat.tss.bray.s
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   theme(legend.position = "bottom",
         legend.title = element_text(colour = "black", size = 22, face = "bold"),
         legend.text = element_text(colour = "black", size = 22),
@@ -3028,7 +3028,7 @@ feces.DNA_salmonellaonly_BC_adonis #5.5% of variation is due to Salmonella Statu
 ######SUPPLEMENTARY TABLE 5.1#######
 stable5.1 <- data.frame(feces.DNA_salmonellaonly_BC_adonis, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metagenomic (DNA)", 
+         `Library Type` = "Metagenomic (MGX)", 
          `Sample Type` = "Feces",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
@@ -3157,7 +3157,7 @@ feces.cDNA_salmonellaonly_BC_adonis #4.5% of variation is due to Salmonella Stat
 #######SUPPLEMENTARY TABLE 5.2#######
 stable5.2 <- data.frame(feces.cDNA_salmonellaonly_BC_adonis, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metatranscriptomic (RNA (cDNA))", 
+         `Library Type` = "Metatranscriptomic (MTX)", 
          `Sample Type` = "Feces",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
@@ -3327,7 +3327,7 @@ water.DNA_salmonellaonly_BC_adonis #10.8% of variation is due to Salmonella Stat
 ######SUPPLEMENTARY TABLE 5.3#######
 stable5.3 <- data.frame(water.DNA_salmonellaonly_BC_adonis, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metagenomic (DNA)", 
+         `Library Type` = "Metagenomic (MGX)", 
          `Sample Type` = "Catch Basins",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
@@ -3454,7 +3454,7 @@ water.cDNA_salmonellaonly_BC_adonis #10.8% of variation is due to Salmonella Sta
 ######SUPPLEMENTARY TABLE 5.4#######
 stable5.4 <- data.frame(water.cDNA_salmonellaonly_BC_adonis, check.names = F)%>%
   mutate(Dataset = "Microbiome (Bacteria - Archaea)",
-         `Library Type` = "Metatranscriptomic (RNA (cDNA))", 
+         `Library Type` = "Metatranscriptomic (MTX)", 
          `Sample Type` = "Catch Basins",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
@@ -3606,7 +3606,7 @@ dendro.bray.plot <- ggplot(data.bacteria.samples.bray.dendro.data$segments) +
   scale_color_manual(
     name = "Library Type", 
     values = gen.material.palette,
-    label = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)")
+    label = c("DNA" = "MGX", "cDNA" = "RNA(cDNA)")
   ) +
   guides(color=guide_legend(title.position="top", 
                             override.aes = list(size = 7)))+
@@ -3687,8 +3687,8 @@ most_abun_phyla <- data.bacteria.samples.phylum.filt.melt %>%
   arrange(sample_type, gen_material, desc(mean_relative_abundance))%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
                                                ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -3785,8 +3785,8 @@ most_abun_orders <- data.bacteria.samples.order.filt.melt %>%
   arrange(gen_material, sample_type, desc(mean_relative_abundance))%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -4010,8 +4010,8 @@ most_abun_families <- data.bacteria.samples.family.filt.melt %>%
   ungroup()%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -4154,8 +4154,8 @@ most_abun_genera <- data.bacteria.samples.genus.filt.melt %>%
   arrange(gen_material, sample_type, desc(mean_relative_abundance))%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -4486,9 +4486,9 @@ DA_feces_plot_MaAslinANCOM <-
   geom_point(size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_plot_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -4660,9 +4660,9 @@ DA_feces_plot_MaAslinANCOM_largest_fold_changes <-
   geom_point(size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_plot_together_largest_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -4788,9 +4788,9 @@ DA_feces_plot_MaAslinANCOM_others_fold_changes <-
   geom_point(size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_plot_together_others_fold_changes%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -5121,9 +5121,9 @@ DA_water_plot_MaAslinANCOM <-
   geom_point(size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_water_plot_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -6728,7 +6728,7 @@ sfigure5 <- ggplot(salmonella_ra.melt,
                        fill =salmonella_culture_status))+
   facet_grid(sample_type~gen_material, scales = "free",
              labeller = as_labeller(c("Feces" = "FECES", "Water" = "CATCH BASINS",
-                                      "cDNA" = "RNA (cDNA)", "DNA" = "DNA")))+
+                                      "cDNA" = "MTX", "DNA" = "MGX")))+
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
   geom_boxplot(alpha = 0.1) +
@@ -6972,7 +6972,7 @@ dendro.bray.plot.Salmonella <- ggplot(data.bacteria.samples.Salmonella.bray.dend
   geom_point(data = data.bacteria.samples.Salmonella.bray.dendro.data$labels,  aes(x = x, y = y, color = gen_material), 
              size = 4, shape = 15, position = position_nudge(y = -0.13)) +
   scale_color_manual(name = "Library Type", values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)")) +
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX")) +
   scale_x_discrete(expand = c(0.03,0,0.03,0)) +
   theme(legend.position = "top",
         legend.direction = "horizontal",
