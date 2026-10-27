@@ -569,7 +569,7 @@ kraken2_classification_percentage.DNAvscDNA <- ggplot(unclassified_counts_metada
         axis.text.y = element_text(colour = "black", size = 20),
         axis.ticks.y = element_line(colour = "black", linewidth = 0.5)) +
   geom_pwc(method = "wilcox_test",
-           label = "Wilcoxon, p = {p}",
+           label = "Wilcoxon, p = {p.format}",
            hide.ns = TRUE,
            method.args = list(paired = T),
            step.increase = 0.08,
@@ -647,7 +647,7 @@ kraken2_classification_percentage.WvsF<- ggplot(unclassified_counts_metadata,
         axis.text.y = element_text(colour = "black", size = 20),
         axis.ticks.y = element_line(colour = "black", linewidth = 0.5))+
   geom_pwc(method = "wilcox_test",
-           label = "Wilcoxon, p = {p}",
+           label = "Wilcoxon, p = {p.format}",
            hide.ns = TRUE,
            step.increase = 0.08,
            label.size = 6,
