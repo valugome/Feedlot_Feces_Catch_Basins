@@ -3950,7 +3950,25 @@ family_named_palette$'Treponemataceae' <- "gold"
 family_named_palette$'Clostridiaceae' <- "maroon"
 family_named_palette$'Bacillaceae' <- "seagreen"
 
-##Dendrogram
+##RA plot
+#Italicized labels (markdown)
+family_level_italic_labels <- c(
+  "Oscillospiraceae" = "*Oscillospiraceae*",
+  "Prevotellaceae" = "*Prevotellaceae*", 
+  "unclassified Bacteria" = "unclassified Bacteria",
+  "Lachnospiraceae" = "*Lachnospiraceae*", 
+  "Bacteroidaceae" = "*Bacteroidaceae*", 
+  "Streptomycetaceae" = "*Streptomycetaceae*",
+  "unclassified Pseudomonadati" = "unclassified *Pseudomonadati*", 
+  "Porphyromonadaceae" = "*Porphyromonadaceae*", 
+  "Pseudomonadaceae" = "*Pseudomonadaceae*",
+  "Chromatiaceae" = "*Chromatiaceae*",
+  "Clostridiaceae" = "*Clostridiaceae*",
+  "Treponemataceae" = "*Treponemataceae*",
+  "unclassified Bacteroidales" = "unclassified *Bacteroidales*", 
+  "Others <0.5% RA" = "Others <0.5% RA"
+)
+
 #Vertical version
 dendroRA.family.plot <- ggplot(data.bacteria.samples.family.filt.melt, aes(x=Sample, y= Abundance, fill = Family)) +
   theme_minimal() +
@@ -3958,14 +3976,17 @@ dendroRA.family.plot <- ggplot(data.bacteria.samples.family.filt.melt, aes(x=Sam
   geom_bar(stat = "summary", colour = "black") +
   scale_y_continuous(transform = "reverse", expand = c(0.0015,0,0.0015,0)) +
   scale_x_discrete(limits = dendro_bray_data.bacteria.samples_order, expand = c(0.03,0,0.03,0)) +
-  scale_fill_manual(values= family_named_palette, breaks = top_families) +
+  scale_fill_manual(values= family_named_palette, 
+                    breaks = top_families, 
+                    labels = family_level_italic_labels) +
   coord_flip()+
   theme(
         legend.position = 'bottom',
         legend.justification = "left",
         legend.box.margin = margin(l = -250, t = -15, unit = "pt"),
         legend.title = element_text(face = "bold", size = 22),
-        legend.text = element_text(size = 22),
+        legend.text = element_markdown(size = 22),  
+        # legend.text = element_text(size = 22),
         plot.background = element_rect(fill = NA, colour = NA),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
