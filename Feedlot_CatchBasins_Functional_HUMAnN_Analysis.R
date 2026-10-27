@@ -563,7 +563,7 @@ pathways.feces.genmat.tss.bray.segs <- merge(pathways.feces.tss.bray.scrs,
                                        setNames(pathways.feces.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
                                            "DNA" = "MGX", 
-                                           "cDNA" = "RNA"))
+                                           "cDNA" = "MTX"))
 
 # Extract R2 and p-values for genmat
 feces_pathways_BC_adonis #have the model
@@ -750,7 +750,7 @@ pathways.water.genmat.tss.bray.segs <- merge(pathways.water.tss.bray.scrs,
                                        setNames(pathways.water.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
                                            "DNA" = "MGX", 
-                                           "cDNA" = "RNA"))
+                                           "cDNA" = "MTX"))
 
 # Extract R2 and p-values for genmat
 water_pathways_BC_adonis #have the model
