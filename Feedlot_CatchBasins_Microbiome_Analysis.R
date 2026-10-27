@@ -2646,7 +2646,8 @@ data.bacteria.samples.water.tss.bray.scrs #have coordinates and metadata
 data.bacteria.samples.water.genmat.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ gen_material, 
                                               data = data.bacteria.samples.water.tss.bray.scrs, FUN = mean) 
 data.bacteria.samples.water.genmat.tss.bray.segs <- merge(data.bacteria.samples.water.tss.bray.scrs, 
-                                          setNames(data.bacteria.samples.water.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)
+                                          setNames(data.bacteria.samples.water.genmat.tss.bray.cent, 
+                                                   c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)
 
 # Extract R2 and p-values for genmat
 water_BC_adonis #have the model
@@ -2665,7 +2666,8 @@ water_genmat_BC_beta_div <- ggplot(data.bacteria.samples.water.genmat.tss.bray.s
                    color = gen_material), show.legend = F)+
   geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material.recode), colour= "white", size = 4) +
+  geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material.recode), 
+            colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
                      labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
@@ -2849,7 +2851,8 @@ feces_genmat_BC_beta_div <- ggplot(data.bacteria.samples.feces.genmat.tss.bray.s
                    color = gen_material), show.legend = F)+
   geom_point(aes(x=MDS1, y=MDS2, colour = gen_material), size = 6, alpha = 0.8) + # individuals
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
-  geom_text(aes (x= cMDS1, y = cMDS2, label= gen_material.recode), colour= "white", size = 4) +
+  geom_text(aes (x= cMDS1, y = cMDS2, label= gen_material.recode), 
+            colour= "white", size = 4, fontface = "bold") +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_color_manual(values = gen.material.palette, 
