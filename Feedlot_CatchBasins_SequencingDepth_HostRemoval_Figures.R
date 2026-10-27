@@ -74,7 +74,6 @@ hostrem[129, "SampleID"] <- "Zymo.1b"
 
 #Merge with metadata
 hostrem <- hostrem %>%
-  filter(!(grepl("F5W02", SampleID)))%>% #Not using F5W02 or F5W02c
   select(SampleID, Hostrem_output_total_num_seqs, Hostrem_percentage_total_seqs_removed)%>%
   left_join(metadata, by = "SampleID")%>%
   rename(HostFree_Reads=Hostrem_output_total_num_seqs)#Hostrem_output_total_num_seqs is the total number of host free reads
@@ -113,16 +112,16 @@ seqdepth <- trimmomatic_reads %>%
   mutate(SequencingDepth_Reads=Trimm_NumberOfInputReads_Paired*2)#Trimmomatic input is the total amount of reads sequenced
 
 ##Check out sequencing depths, take out those with low reads
-sort(seqdepth$SequencingDepth_Reads) #Low ones belong to blanks, NTCs and F5W02 and F5W02c
+sort(seqdepth$SequencingDepth_Reads) #Low ones belong to blanks, NTCs 
 
 #Only samples and zymos 
 seqdepth.samples_zymos <- seqdepth%>%
-  filter(!grepl("NTC|EB|F5W02", SampleID))
+  filter(!grepl("NTC|EB", SampleID))
 nrow(seqdepth.samples_zymos) #Left with 122 samples
 
 #Only samples
 seqdepth.samples <- seqdepth%>%
-  filter(!grepl("NTC|EB|Zymo|F5W02", SampleID))
+  filter(!grepl("NTC|EB|Zymo", SampleID))
 nrow(seqdepth.samples) #Left with 120 samples
 
 ##Factor order 
@@ -139,8 +138,8 @@ sequencing_depth_cDNAvDNA.WandF<- ggplot(seqdepth.samples, aes(x = gen_material,
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -173,7 +172,7 @@ wilcox_test(feces.seqdepth.samples%>%arrange(SampleID),
 sequencing_depth_WvF.cDNAandDNA<- ggplot(seqdepth.samples, aes(x = sample_type, y= SequencingDepth_Reads, color = sample_type, fill = sample_type)) +
   theme_bw() +
   labs(y= "Reads", color = "Sample Type", fill = "Sample Type") +
-  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))) +
+  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "MGX", "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +  scale_fill_manual(values = sample.type.palette, labels = c("Feces" = "Feces", "Water" = "Catch basin"))+
@@ -291,14 +290,14 @@ sfigure1
 #HOST REMOVAL STATS#####
 hostrem
 
-#Only samples and zymos (also taking out F5W02 and F5W02c cuz of low sequencing depth)
+#Only samples and zymos 
 hostrem.samples_zymos <- hostrem%>%
-  filter(!grepl("NTC|EB|F5W02", SampleID))
+  filter(!grepl("NTC|EB", SampleID))
 nrow(hostrem.samples_zymos) #Left with 122 samples
 
-#Only analyzing samples (also taking out F5W02 and F5W02c cuz of low sequencing depth)
+#Only analyzing samples
 hostrem.samples <- hostrem%>%
-  filter(!grepl("NTC|EB|Zymo|F5W02", SampleID))
+  filter(!grepl("NTC|EB|Zymo", SampleID))
 
 #Factor order
 hostrem.samples <- hostrem.samples%>%
@@ -314,8 +313,8 @@ host_free_reads_cDNAvDNA.WandF<- ggplot(hostrem.samples%>%arrange(SampleID),
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -362,8 +361,8 @@ host_free_percentage_cDNAvDNA.WandF<- ggplot(hostrem.samples%>%arrange(SampleID)
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -404,7 +403,7 @@ wilcox_test(feces.hostrem.samples%>%arrange(SampleID),
 host_free_reads_WvF.cDNAandDNA<- ggplot(hostrem.samples, aes(x = sample_type, y= HostFree_Reads, color = sample_type, fill = sample_type)) +
   theme_bw() +
   labs(y= "Reads", color = "Sample Type", fill = "Sample Type") +
-  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))) +
+  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "MGX", "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2)  +
@@ -447,7 +446,7 @@ host_free_percentage_WvF.cDNAandDNA<- ggplot(hostrem.samples, aes(x = sample_typ
                                                                   color = sample_type, fill = sample_type)) +
   theme_bw() +
   labs(y= "Percentage (%)\n of reads", color = "Sample Type", fill = "Sample Type") +
-  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "DNA", "cDNA" = "RNA(cDNA)"))) +
+  facet_wrap(~gen_material, labeller = as_labeller(c("DNA" = "MGX", "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
