@@ -2587,7 +2587,7 @@ data.bacteria.samples.water.tss.bray.scrs <- scores(data.bacteria.samples.water.
 data.bacteria.samples.water.tss.bray.scrs <- cbind(as.data.frame(data.bacteria.samples.water.tss.bray.scrs), 
                                    gen_material = data.bacteria.samples.water.tss.df$gen_material, 
                                    feedlot = factor(data.bacteria.samples.water.tss.df$feedlot), 
-                                   gen_material.recode = ifelse(data.bacteria.samples.water.tss.df$gen_material == "DNA", "DNA", "RNA"),
+                                   gen_material.recode = ifelse(data.bacteria.samples.water.tss.df$gen_material == "DNA", "MGX", "MTX"),
                                    gen_material_spec_2 = data.bacteria.samples.water.tss.df$gen_material_spec_2,
                                    sampleID = rownames(data.bacteria.samples.water.tss.df))
 
@@ -2769,7 +2769,7 @@ data.bacteria.samples.feces.tss.bray.scrs <- scores(data.bacteria.samples.feces.
 #This step creates a new data frame that includes both the ordination scores (MDS) and additional metadata
 data.bacteria.samples.feces.tss.bray.scrs <- cbind(as.data.frame(data.bacteria.samples.feces.tss.bray.scrs), 
                                    gen_material = data.bacteria.samples.feces.tss.df$gen_material, 
-                                   gen_material.recode = ifelse(data.bacteria.samples.feces.tss.df$gen_material == "DNA", "DNA", "RNA"),
+                                   gen_material.recode = ifelse(data.bacteria.samples.feces.tss.df$gen_material == "DNA", "MGX", "MTX"),
                                    feedlot = factor(data.bacteria.samples.feces.tss.df$feedlot), 
                                    gen_material_spec_2 = data.bacteria.samples.feces.tss.df$gen_material_spec_2,
                                    sampleID = rownames(data.bacteria.samples.feces.tss.df))
