@@ -551,8 +551,8 @@ kraken2_classification_percentage.DNAvscDNA <- ggplot(unclassified_counts_metada
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
