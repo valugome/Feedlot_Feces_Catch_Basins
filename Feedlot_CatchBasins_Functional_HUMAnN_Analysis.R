@@ -239,8 +239,8 @@ percent_alignedreads.cDNAvsDNA.WaF<- ggplot(reads_hostrem_humann_mapping_samples
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -283,8 +283,8 @@ percent_alignedreads_WvF.cDNAandDNA<- ggplot(reads_hostrem_humann_mapping_sample
   facet_grid(~gen_material,
              scales = "free",
              #switch = "y", 
-             labeller = as_labeller(c("DNA" = "DNA", 
-                                      "cDNA" = "RNA (cDNA)"))) +
+             labeller = as_labeller(c("DNA" = "MGX", 
+                                      "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_jitter(size = 3, shape = 18, 
               alpha = 0.8, width = 0.2) +
@@ -562,7 +562,7 @@ pathways.feces.genmat.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ gen_material
 pathways.feces.genmat.tss.bray.segs <- merge(pathways.feces.tss.bray.scrs, 
                                        setNames(pathways.feces.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
-                                           "DNA" = "DNA", 
+                                           "DNA" = "MGX", 
                                            "cDNA" = "RNA"))
 
 # Extract R2 and p-values for genmat
@@ -585,7 +585,7 @@ feces_genmat_pathways_BC_beta_div <- ggplot(pathways.feces.genmat.tss.bray.segs)
   geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), 
             colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
@@ -749,7 +749,7 @@ pathways.water.genmat.tss.bray.cent <- aggregate(cbind(MDS1,MDS2) ~ gen_material
 pathways.water.genmat.tss.bray.segs <- merge(pathways.water.tss.bray.scrs, 
                                        setNames(pathways.water.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
-                                           "DNA" = "DNA", 
+                                           "DNA" = "MGX", 
                                            "cDNA" = "RNA"))
 
 # Extract R2 and p-values for genmat
@@ -771,7 +771,7 @@ water_genmat_pathways_BC_beta_div <- ggplot(pathways.water.genmat.tss.bray.segs)
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
@@ -832,7 +832,7 @@ DNA_pathways_BC_adonis_sampletype_feedlot  #Significant effect of sample type an
 ######SUPPLEMENTARY TABLE 5.13 #######
 stable5.13 <- data.frame(DNA_pathways_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Functional Pathways",
-         `Library Type` = "Metagenomic (DNA)",
+         `Library Type` = "Metagenomic (MGX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -998,7 +998,7 @@ cDNA_pathways_BC_adonis_sampletype_feedlot  #Significant effect of sample type a
 ######SUPPLEMENTARY TABLE 5.14#######
 stable5.14 <- data.frame(cDNA_pathways_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Functional Pathways",
-         `Library Type` = "Metatranscriptomic (RNA (cDNA))",
+         `Library Type` = "Metatranscriptomic (MTX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -2061,9 +2061,9 @@ DA_fecespathways_plot_MaAslinANCOM <-
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_pathways_together%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -2162,9 +2162,9 @@ DA_fecespathways_plot_MaAslinANCOM_largest_fold <-
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_pathways_together_largest_fold%>%filter(plot == 'Log2 Fold change with 95%CI'),
@@ -2232,9 +2232,9 @@ DA_fecespathways_plot_MaAslinANCOM_others<-
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"))+
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   new_scale_color()+
   geom_errorbar(inherit.aes=FALSE,
                 data=DA_feces_pathways_together_others%>%filter(plot == 'Log2 Fold change with 95%CI'),
