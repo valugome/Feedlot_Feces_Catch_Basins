@@ -239,9 +239,9 @@ percent_alignedreads_ARG.cDNAvsDNA.WaF<- ggplot(Percentage_reads_aligned_metadat
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_fill_manual(values = gen.material.palette, 
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -290,8 +290,8 @@ percent_alignedreads_ARG_WvF.cDNAandDNA<- ggplot(Percentage_reads_aligned_metada
   facet_grid(~gen_material,
              scales = "free",
              #switch = "y", 
-             labeller = as_labeller(c("DNA" = "DNA", 
-                                      "cDNA" = "RNA (cDNA)"))) +
+             labeller = as_labeller(c("DNA" = "MGX", 
+                                      "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_color_manual(values = sample.type.palette, 
@@ -443,8 +443,8 @@ aligned_reads_ARG.cDNAvsDNA.WaF<- ggplot(data2_ARG.df,
   facet_grid(~sample_type, scales = "free",  labeller = as_labeller(c("Feces" = "FECES", "Water" = "CATCH BASINS"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_y_continuous(expand= c(0.05,0,0.1,0)) +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
@@ -488,8 +488,8 @@ aligned_reads_ARG_WvF.cDNAandDNA<- ggplot(data2_ARG.df, aes(x = sample_type, y= 
   facet_grid(~gen_material,
              scales = "free",
              #switch = "y", 
-             labeller = as_labeller(c("DNA" = "DNA", 
-                                      "cDNA" = "RNA (cDNA)"))) +
+             labeller = as_labeller(c("DNA" = "MGX", 
+                                      "cDNA" = "MTX"))) +
   geom_boxplot(alpha = 0.1) +
   geom_point(size = 3, shape = 18) +
   scale_color_manual(values = sample.type.palette, labels = c("Feces" = "Feces", "Water" = "Catch Basins")) +
@@ -949,8 +949,8 @@ alpha_div_emmeans_resistome <- alpha_div_emmeans_resistome%>%
          `P value` = format(p.value, scientific = TRUE, digits = 3))%>%
   mutate(across(where(is.character),
                 ~ str_replace_all(., c("Water" = "Catch Basins",
-                                       "cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                       "(?<!c)DNA" = "Metagenomic (DNA)", 
+                                       "cDNA" = "Metatranscriptomic (MTX)", 
+                                       "(?<!c)DNA" = "Metagenomic (MGX)", 
                                        "feedlot" = "Feedlot"))))%>% #"Match DNA only if it is NOT immediately preceded by c."
   select(Dataset, Metric, `Sample Type`, `Library Type`, Feedlot, Contrast, Estimate, SE, Df, `T ratio`, `P value`)
   
@@ -1036,7 +1036,7 @@ alpha_div_emmeans_WvsF_DNAandcDNA_resistome <- alpha_div_emmeans_data %>%
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
+                                      "DNA" = "MGX", 
                                       "cDNA" = "RNA\n(cDNA)")), 
              scales = "free")+
   theme_bw() +
@@ -1088,7 +1088,7 @@ alpha_div_emmeans_WvsF_DNAandcDNA_feedlot_resistome <- alpha_div_emmeans_data_AR
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
+                                      "DNA" = "MGX", 
                                       "cDNA" = "RNA\n(cDNA)", 
                                       "1" = "1",
                                       "2" = "2", 
@@ -1148,7 +1148,7 @@ alpha_div_emmeans_cDNAvsDNA_WandF_resistome <- alpha_div_emmeans_data %>%
                 position = position_dodge(width = 0.5), 
                 width = 0.2,
                 linewidth = 1.5) +
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   scale_shape_manual(name = "Feedlot",
                      values = c(15,17,18,19, 12))+
   theme_bw() +
@@ -1199,7 +1199,7 @@ alpha_div_emmeans_cDNAvsDNA_WandF_feedlot_resistome <-
                 position = position_dodge(width = 0.5), 
                 width = 0.2,
                 linewidth = 1.5) +
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   theme_bw() +
   labs(title= "RESISTOME", color = "Library Type") +
   facet_grid(alpha_div_metric ~ feedlot +sample_type ,
@@ -1260,8 +1260,8 @@ alpha_div_ARG_group_WvF.cDNAandDNA <- ggplot(alpha_div_ARG_group_long, aes(x = s
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "DNA" = "DNA", 
-                                      "cDNA" = "RNA (cDNA)",
+                                      "DNA" = "MGX", 
+                                      "cDNA" = "MTX",
                                       "1" = "1",
                                     "2" = "2", 
                                     "3" = "3",
@@ -1314,8 +1314,8 @@ alpha_div_ARG_group_cDNAvsDNA.WandF  <- ggplot(alpha_div_ARG_group_long, aes(x =
               shape = 18,
               size = 4) +#raw data
   geom_boxplot(alpha = 0.1) +
-  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
-  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+
+  scale_fill_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
+  scale_color_manual(values = gen.material.palette, labels = c("DNA" = "MGX", "cDNA" = "MTX"))+
   theme(legend.position = "bottom",
         legend.text = element_text(size = 20),
         legend.title = element_text(size = 22, face = "bold"),
@@ -1350,8 +1350,8 @@ alpha_div_ARG_group_reseq <- ggplot(alpha_div_ARG_group_long, aes(x = re_sequenc
              labeller = as_labeller(c("Observed" = "RICHNESS\n(OBSERVED)",
                                       "Shannon" = "DIVERSITY\n(SHANNON)",
                                       "pielou" = "EVENNESS", 
-                                      "cDNA" = "RNA (cDNA)", 
-                                      "DNA" = "DNA"))) +
+                                      "cDNA" = "MTX", 
+                                      "DNA" = "MGX"))) +
   geom_jitter(alpha = 0.5,
               width = 0.2,
               shape = 18,
@@ -1420,7 +1420,7 @@ cDNA_BC_adonis_sampletype_feedlot #Significance of both sample type and feedlot
 ######SUPPLEMENTARY TABLE 5.10 #######
 stable5.10 <- data.frame(cDNA_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Resistome",
-         `Library Type` = "Metatranscriptomic (RNA (cDNA))",
+         `Library Type` = "Metatranscriptomic (MTX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -1590,7 +1590,7 @@ DNA_BC_adonis_sampletype_feedlot #Significant effects of sample type and feedlot
 ######SUPPLEMENTARY TABLE 5.9 #######
 stable5.9 <- data.frame(DNA_BC_adonis_sampletype_feedlot, check.names = F)%>%
   mutate(Dataset = "Resistome",
-         `Library Type` = "Metagenomic (DNA)",
+         `Library Type` = "Metagenomic (MGX)",
          SumOfSqs = round(SumOfSqs, 2), 
          `R2` = round(`R2`,3), 
          `F` = round(`F`,2), 
@@ -1873,7 +1873,7 @@ data2_ARG.water.genmat.tss.bray.segs <- merge(data2_ARG.water.tss.bray.scrs,
                                           setNames(data2_ARG.water.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), 
                                           by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
-                                           "DNA" = "DNA", 
+                                           "DNA" = "MGX", 
                                            "cDNA" = "RNA"))
 
 # Extract R2 and p-values for genmat
@@ -1896,7 +1896,7 @@ water_genmat_BC_beta_div <- ggplot(data2_ARG.water.genmat.tss.bray.segs) + theme
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2,label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
@@ -2062,7 +2062,7 @@ data2_ARG.feces.genmat.tss.bray.segs <- merge(data2_ARG.feces.tss.bray.scrs,
                                           setNames(data2_ARG.feces.genmat.tss.bray.cent, c("gen_material","cMDS1","cMDS2")), 
                                           by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
-                                    "DNA" = "DNA", 
+                                    "DNA" = "MGX", 
                                     "cDNA" = "RNA"))
 
 # Extract R2 and p-values for genmat
@@ -2084,7 +2084,7 @@ feces_genmat_BC_beta_div <- ggplot(data2_ARG.feces.genmat.tss.bray.segs) + theme
   geom_point(aes(x=cMDS1, y= cMDS2, colour = gen_material), size = 13) + # centroids
   geom_text(aes (x= cMDS1, y = cMDS2, label= gen_material_plot), colour= "white", size = 4, fontface = "bold") +
   scale_color_manual(values = gen.material.palette, 
-                     labels = c("cDNA" = "RNA (cDNA)", "DNA" = "DNA")) +
+                     labels = c("cDNA" = "MTX", "DNA" = "MGX")) +
   scale_x_continuous(labels = function(x) sprintf("%.2f", x))+
   scale_y_continuous(labels = function(x) sprintf("%.2f", x))+
   theme(legend.position = "bottom",
@@ -2196,7 +2196,7 @@ dendro.bray.ARG.plot <- ggplot(data2_ARG.bray.dendro.data$segments) +
   scale_color_manual(
     name = "Library Type", 
     values = gen.material.palette,
-    label = c("DNA" = "DNA", "cDNA" = "RNA(cDNA)")
+    label = c("DNA" = "MGX", "cDNA" = "RNA(cDNA)")
   ) +
   guides(color=guide_legend(title.position="top", 
                             override.aes = list(size = 7)))+
@@ -2321,8 +2321,8 @@ most_abun_classes_ARG <- data2_ARG_class.filt.melt %>%
   arrange(sample_type, gen_material, desc(mean_relative_abundance))%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -2426,8 +2426,8 @@ most_abun_mechanism <- data2_ARG_mechanism.filt.melt %>%
   arrange(sample_type, gen_material, desc(mean_relative_abundance))%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -2519,8 +2519,8 @@ most_abun_group <-data2_ARG_group.filt.melt %>%
   ungroup()%>%
   mutate(`Sample Type` = str_replace(sample_type, "Water", "Catch Basins"), 
          `Library Type` = str_replace_all(gen_material, 
-                                          c("cDNA" = "Metatranscriptomic (RNA (cDNA))", 
-                                            "(?<!c)DNA" = "Metagenomic (DNA)") #"Match DNA only if it is NOT immediately preceded by c." 
+                                          c("cDNA" = "Metatranscriptomic (MTX)", 
+                                            "(?<!c)DNA" = "Metagenomic (MGX)") #"Match DNA only if it is NOT immediately preceded by c." 
          ), 
          `Mean Relative Abundance (%) ± SD` = paste0(
            round(mean_relative_abundance, 2),
@@ -2932,9 +2932,9 @@ DA_feces_plot_MaAslinANCOM <-
              aes(x=Group, y=logvalue, fill = gen_material, color = gen_material),
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"), 
          fill=guide_legend(order = 1,title="Library Type", title.position="top"))+
   new_scale_color()+
@@ -3085,9 +3085,9 @@ DA_feces_plot_MaAslinANCOM_largest_fold_changes <-
              aes(x=Group, y=logvalue, fill = gen_material, color = gen_material),
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"), 
          fill=guide_legend(order = 1,title="Library Type", title.position="top"))+
   new_scale_color()+
@@ -3206,9 +3206,9 @@ DA_feces_plot_MaAslinANCOM_others_fold_changes <-
              aes(x=Group, y=logvalue, fill = gen_material, color = gen_material),
              size = 2, shape = 18, position = position_dodge(width = 0.75)) +
   scale_color_manual(values = gen.material.palette,
-                     labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                     labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   scale_fill_manual(values=gen.material.palette,
-                    labels = c("DNA" = "DNA", "cDNA" = "RNA (cDNA)"))+ 
+                    labels = c("DNA" = "MGX", "cDNA" = "MTX"))+ 
   guides(color=guide_legend(order = 1,title="Library Type", title.position="top"), 
          fill=guide_legend(order = 1,title="Library Type", title.position="top"))+
   new_scale_color()+
