@@ -378,7 +378,7 @@ host_free_percentage_cDNAvDNA.WandF<- ggplot(hostrem.samples%>%arrange(SampleID)
         axis.text.y = element_text(colour = "black", size = 20),
         axis.ticks.y = element_line(colour = "black", linewidth = 0.5)) +
   geom_pwc(method = "wilcox_test",
-           label = "Wilcoxon, p = {p}",
+           label = "Wilcoxon, p = {p.format}",
            hide.ns = TRUE,
            method.args = list(paired = TRUE),
            step.increase = 0.08,
@@ -467,7 +467,7 @@ host_free_percentage_WvF.cDNAandDNA<- ggplot(hostrem.samples, aes(x = sample_typ
         axis.text.y = element_text(colour = "black", size = 20),
         axis.ticks.y = element_line(colour = "black", linewidth = 0.5))+
 geom_pwc(method = "wilcox_test",
-         label = "Wilcoxon, p = {p}",
+         label = "Wilcoxon, p = {p.format}",
          hide.ns = TRUE,
          step.increase = 0.08,
          label.size = 6,
@@ -492,11 +492,6 @@ sfigure2 <- cowplot::plot_grid(
   theme(
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10))
 sfigure2 
-ggsave("/Users/valerialugo/Library/CloudStorage/OneDrive-TexasA&MUniversity/Documents/Projects/Feedlot_Lagoon_Project/Writing/Paper_figures/SupplementaryFigure2.png", 
-       plot = sfigure2,  
-       device = "png", 
-       dpi = 600, 
-       width = 10, height =10)
 
 
 ###Feedlot - Not significant ####
