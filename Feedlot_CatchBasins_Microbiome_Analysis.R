@@ -4468,7 +4468,7 @@ DA_feces_plot_together$Genus <- factor(DA_feces_plot_together$Genus, levels = re
 # Create the updated taxonomy plot
 taxonomy_plot_feces <- ggplot(taxonomy_plot_data_fecal) +
   geom_text(aes(x =0, y = Genus, label = label_Family), hjust = 0, 
-            size = 9.29, family = "sans") +  # Move text left by adjusting x
+            size = 9.29, family = "sans", , fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Family") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -4538,7 +4538,7 @@ DA_feces_plot_MaAslinANCOM <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=17, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -4642,7 +4642,7 @@ DA_feces_plot_together_largest_fold_changes$Genus <-
 taxonomy_plot_feces_largest_fold_changes <- 
   ggplot(taxonomy_plot_data_fecal_largest_fold_changes) +
   geom_text(aes(x =0, y = Genus, label = label_Family), hjust = 0, 
-            size = 9.29, family = "sans") +  # Move text left by adjusting x
+            size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Family") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -4715,7 +4715,7 @@ DA_feces_plot_MaAslinANCOM_largest_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=17, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -4770,7 +4770,7 @@ DA_feces_plot_together_others_fold_changes$Genus <-
 taxonomy_plot_feces_others_fold_changes <- 
   ggplot(taxonomy_plot_data_fecal_others_fold_changes) +
   geom_text(aes(x =0, y = Genus, label = label_Family), hjust = 0, 
-            size = 9.29, family = "sans") +  # Move text left by adjusting x
+            size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Family") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -4843,7 +4843,7 @@ DA_feces_plot_MaAslinANCOM_others_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=17, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -5103,7 +5103,7 @@ DA_water_plot_together$Genus <- factor(DA_water_plot_together$Genus, levels = re
 
 # Create the updated taxonomy plot
 taxonomy_plot_water <- ggplot(taxonomy_plot_data_water) +
-  geom_text(aes(x =0, y = Genus, label = label_Family), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Family), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Family") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -5173,21 +5173,13 @@ DA_water_plot_MaAslinANCOM <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=17, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
         panel.grid.minor = element_blank())
 DA_water_plot_MaAslinANCOM
-
-##Adding the q values
-DA_water_plot_MaAslinANCOM_q <- DA_water_plot_MaAslinANCOM +
-  geom_text(inherit.aes=FALSE,
-            data = DA_water_plot_together %>% filter(plot == 'Log2 Fold change with 95%CI'),
-            aes(x = Genus, y = coef, label = DA),
-            position = position_dodge2(width = 0.75),
-            vjust = -0.6, size = 3)
 
 ##Putting together DA plot with taxonomy (family level) plot
 combined_plot_water <- plot_grid(
@@ -5204,19 +5196,6 @@ combined_plot_water <- plot_grid(
   theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
 combined_plot_water
 
-##Adding q values 
-combined_plot_water_q <- plot_grid(
-  taxonomy_plot_water+ theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
-  DA_water_plot_MaAslinANCOM_q + theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"),
-                                     plot.title = element_blank(),
-                                     strip.text=element_text(size=16, color = "white", face = "bold")),
-  ncol = 2, 
-  rel_widths = c(0.4,2),  # Adjust the width ratio as needed
-  align = "h", 
-  axis = "tb") +
-  labs(title = "CATCH BASINS")+
-  theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
-combined_plot_water_q
 
 
 #####Only largest positive and negative fold changes#####
@@ -5498,7 +5477,7 @@ DA_DNA_plot_together$Genus <- factor(DA_DNA_plot_together$Genus, levels = rev(ta
 
 # Create the updated taxonomy plot
 taxonomy_plot_DNA <- ggplot(taxonomy_plot_data_DNA) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -5569,21 +5548,13 @@ DA_DNA_plot_MaAslinANCOM <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
         strip.placement="outside", panel.spacing.y=unit(0.5, "lines"),
         panel.grid.minor = element_blank())
 DA_DNA_plot_MaAslinANCOM
-
-##Adding the q values
-DA_DNA_plot_MaAslinANCOM_q <- DA_DNA_plot_MaAslinANCOM +
-  geom_text(inherit.aes=FALSE,
-            data = DA_DNA_plot_together %>% filter(plot == 'Log2 Fold change with 95%CI'),
-            aes(x = Genus, y = coef, label = DA),
-            position = position_dodge2(width = 0.75),
-            vjust = -0.6, size = 3)
 
 ##Putting together DA plot with taxonomy (family level) plot
 combined_plot_DNA <- plot_grid(
@@ -5597,21 +5568,6 @@ combined_plot_DNA <- plot_grid(
   labs(title = "Metagenomic libraries (DNA)")+
   theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
 combined_plot_DNA
-
-##Adding q values 
-combined_plot_DNA_q <- plot_grid(
-  taxonomy_plot_DNA+ 
-    theme(plot.margin = unit(c(0.2, 0, 0.2, 0.5), "cm")),  # Change margins, need less right margin
-  DA_DNA_plot_MaAslinANCOM_q + theme(plot.margin = unit(c(0.2, 0.5, 0.2, -0.5), "cm"),
-                                    plot.title = element_blank(),
-                                    strip.text=element_text(size=16, color = "white", face = "bold")),
-  ncol = 2, 
-  rel_widths = c(0.3,2),  # Adjust the width ratio as needed
-  align = "h", 
-  axis = "tb") +
-  labs(title = "Metagenomic libraries (DNA)")+
-  theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
-combined_plot_DNA_q
 
 #####Only largest positive and negative fold changes#####
 DA_DNA_plot_together %>%
@@ -5672,7 +5628,7 @@ taxonomy_plot_data_DNA_largest_fold_changes$Genus <-
 
 # Create the updated taxonomy plot
 taxonomy_plot_DNA_largest_fold_changes <- ggplot(taxonomy_plot_data_DNA_largest_fold_changes) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -5743,7 +5699,7 @@ DA_DNA_plot_MaAslinANCOM_largest_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.2, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -5796,7 +5752,7 @@ taxonomy_plot_data_DNA_others_fold_changes$Genus <-
 
 # Create the updated taxonomy plot
 taxonomy_plot_DNA_others_fold_changes <- ggplot(taxonomy_plot_data_DNA_others_fold_changes) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_DNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -5867,7 +5823,7 @@ DA_DNA_plot_MaAslinANCOM_others_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.3, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -6123,7 +6079,7 @@ DA_cDNA_plot_together$Genus <- factor(DA_cDNA_plot_together$Genus, levels = rev(
 
 # Create the updated taxonomy plot
 taxonomy_plot_cDNA <- ggplot(taxonomy_plot_data_cDNA) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_cDNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -6189,7 +6145,7 @@ DA_cDNA_plot_MaAslinANCOM <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size=28, angle=0, vjust= 1.045, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -6272,7 +6228,7 @@ taxonomy_plot_data_cDNA_largest_fold_changes$Genus <-
 
 # Create the updated taxonomy plot
 taxonomy_plot_cDNA_largest_fold_changes <- ggplot(taxonomy_plot_data_cDNA_largest_fold_changes) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_cDNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -6346,7 +6302,7 @@ DA_cDNA_plot_MaAslinANCOM_largest_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.1, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -6399,7 +6355,7 @@ taxonomy_plot_data_cDNA_others_fold_changes$Genus <-
 
 # Create the updated taxonomy plot
 taxonomy_plot_cDNA_others_fold_changes <- ggplot(taxonomy_plot_data_cDNA_others_fold_changes) +
-  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans") +  # Move text left by adjusting x
+  geom_text(aes(x =0, y = Genus, label = label_Phylum), hjust = 0, size = 9.29, family = "sans", fontface = 'italic') +  # Move text left by adjusting x
   labs(title = "Phylum") +
   theme_void() +
   #scale_y_discrete(limits =  rev(taxonomy_plot_data_cDNA$Genus)) +  # Ensure y-axis matches the taxon order
@@ -6473,7 +6429,7 @@ DA_cDNA_plot_MaAslinANCOM_others_fold_changes <-
         axis.text.x=element_text(size=20),
         plot.margin = margin(t = 10, r = 10, b = 10, l = 10),  # top, right, bottom, left
         axis.title.y=element_text(size= 28, angle=0, vjust= 1.08, face = "bold"), 
-        axis.text.y=element_text(size=26, vjust = 0.5),
+        axis.text.y=element_text(size=26, vjust = 0.5, face = 'italic'),
         strip.text=element_text(size=18, color = "white", face = "bold"),
         strip.background=element_rect(fill='black'
                                       , color='white'),
@@ -6493,8 +6449,6 @@ combined_plot_cDNA_others_fold_changes <- plot_grid(
   rel_widths = c(0.3,2),  # Adjust the width ratio as needed
   align = "h", 
   axis = "tb") 
-# labs(title = "Metatranscriptomic libraries (RNA (cDNA))")+
-# theme(plot.title = element_text(size = 30, colour = "black", face = "bold"))
 combined_plot_cDNA_others_fold_changes
 
 
