@@ -1874,7 +1874,7 @@ data2_ARG.water.genmat.tss.bray.segs <- merge(data2_ARG.water.tss.bray.scrs,
                                           by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
                                            "DNA" = "MGX", 
-                                           "cDNA" = "RNA"))
+                                           "cDNA" = "MTX"))
 
 # Extract R2 and p-values for genmat
 water_BC_adonis #have the model
@@ -2063,7 +2063,7 @@ data2_ARG.feces.genmat.tss.bray.segs <- merge(data2_ARG.feces.tss.bray.scrs,
                                           by = 'gen_material', sort = F)%>%
   mutate(gen_material_plot = dplyr::recode(gen_material, 
                                     "DNA" = "MGX", 
-                                    "cDNA" = "RNA"))
+                                    "cDNA" = "MTX"))
 
 # Extract R2 and p-values for genmat
 feces_BC_adonis #have the model
