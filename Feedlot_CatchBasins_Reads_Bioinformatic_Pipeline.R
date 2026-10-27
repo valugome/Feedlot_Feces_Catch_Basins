@@ -71,8 +71,7 @@ final_feedlot_lagoon_stats <- left_join(trimmomatic,
                                         sortmerna, 
                                         by = "SampleID")%>%
   left_join(flash, by = "SampleID")%>%
-  left_join(hostrem, by = "SampleID")%>%
-  filter(!grepl("F5W02", SampleID)) ##Not including F5W02
+  left_join(hostrem, by = "SampleID")
 nrow(final_feedlot_lagoon_stats) #129 = 120 samples, 4 extraction blanks (2 EBs, 2 EBc), 3 NTC, 2 Zymo mock communities
 
 #SEQUENCING EFFORT#####
