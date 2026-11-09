@@ -2639,7 +2639,7 @@ figure4 <-
 figure4
 
 
-###FIGURE 6CD - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
+###FIGURE 7CD - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
 water_genmat_BC_beta_div 
 feces_genmat_BC_beta_div 
 
@@ -2661,7 +2661,7 @@ WaterandFeces_ARG_beta_div_spider_genmat <- ggarrange(
   legend = "none"
 )
 WaterandFeces_ARG_beta_div_spider_genmat
-figure6CD <- WaterandFeces_ARG_beta_div_spider_genmat
+figure7CD <- WaterandFeces_ARG_beta_div_spider_genmat
   
 #Save figure
 
@@ -3459,17 +3459,17 @@ water.group_log_corr_abn <- ancombc_output_water.group$bias_correct_log_table %>
   mutate(plot = 'log(Bias-corrected abundances)',
          gen_material = ifelse(grepl("c", Sample), "cDNA", "DNA"))
 
-####FIGURE 7C - DA EMPHASIS ON DNA vs cDNA#####
+####FIGURE 8C - DA EMPHASIS ON DNA vs cDNA#####
 #Only feces had Differentially abundant ARG groups
 combined_plot_feces_largest_fold_changes
 
-figure7C <-plot_grid(combined_plot_feces_largest_fold_changes, 
+figure8C <-plot_grid(combined_plot_feces_largest_fold_changes, 
                             labels = c("C", " "),
                             label_size = 35,
                             ncol = 1)
   #labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-figure7C
+figure8C
 
 
 ####SFIGURE9B -  DA EMPHASIS ON DNA vs cDNA - Feces not the largest logfold changes#####
@@ -4754,12 +4754,12 @@ combined_plot_cDNA_MaAslinANCOM_others_fold_changes <- plot_grid(
 combined_plot_cDNA_MaAslinANCOM_others_fold_changes
 
 
-####FIGURE 5CandD#####
+####FIGURE 6CandD#####
 #Put together these 2 plots:
 combined_plot_DNA_MaAslinANCOM_largest_fold_changes
 combined_plot_cDNA_MaAslinANCOM_largest_fold_changes
 
-figure5CandD <-plot_grid(combined_plot_DNA_MaAslinANCOM_largest_fold_changes,
+figure6CandD <-plot_grid(combined_plot_DNA_MaAslinANCOM_largest_fold_changes,
                          combined_plot_cDNA_MaAslinANCOM_largest_fold_changes, 
                          align = "v",
                          labels = c("C", "D"),
@@ -4768,7 +4768,7 @@ figure5CandD <-plot_grid(combined_plot_DNA_MaAslinANCOM_largest_fold_changes,
                          ncol = 1)
   # labs(title = "RESISTOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-figure5CandD
+figure6CandD
 
 
 ####SFIGURE8CD -  DA EMPHASIS ON FECES VS CATCH BASINS - Not the largest logfold changes#####
