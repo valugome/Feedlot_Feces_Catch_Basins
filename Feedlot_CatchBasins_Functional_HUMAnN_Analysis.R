@@ -1152,8 +1152,8 @@ cDNAandDNA_BC_pathways_beta_div_spider_sampletype <- ggarrange(
 cDNAandDNA_BC_pathways_beta_div_spider_sampletype
 
 ##DNA and cDNA ordination plots - Figure 4GH
-figure4DE <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
-figure4DE
+figure5 <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
+figure5
 
 
 ####FIGURE 6EF - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
