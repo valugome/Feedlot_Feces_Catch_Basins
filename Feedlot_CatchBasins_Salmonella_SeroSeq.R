@@ -66,6 +66,13 @@ load_packages(cran_pkgs,bioc_pkgs)
 #Load data####
 ##SEROVARS PROPORTION#####
 seroseq_serovars <- read_csv('Data/SeroSeq_Data.csv')
+nrow(seroseq_serovars) #OK, 24 culture positive samples
+
+#SeroSeq raw sequencing depth 
+summary(seroseq_serovars$`WL Reads`)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 170532  452853  542014  622454  702432 1457486 
+
 
 ##Pivot to longer format 
 seroseq_serovars_long <- pivot_longer(seroseq_serovars,
