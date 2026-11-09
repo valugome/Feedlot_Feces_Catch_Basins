@@ -1156,7 +1156,7 @@ figure5 <- cDNAandDNA_BC_pathways_beta_div_spider_sampletype
 figure5
 
 
-####FIGURE 6EF - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
+####FIGURE 7EF - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
 water_genmat_pathways_BC_beta_div 
 feces_genmat_pathways_BC_beta_div
 
@@ -1178,7 +1178,7 @@ WaterandFeces_pathways_beta_div_spider_genmat <- ggarrange(
   legend = "none"
 )
 WaterandFeces_pathways_beta_div_spider_genmat
-figure6EF <- WaterandFeces_pathways_beta_div_spider_genmat
+figure7EF <- WaterandFeces_pathways_beta_div_spider_genmat
 
 
 ####SUPPLEMENTARY FIGURE 10EF#######
@@ -1810,12 +1810,12 @@ DA_pathways_cDNA_plot_MaAslinANCOM <-
 DA_pathways_cDNA_plot_MaAslinANCOM
 
 
-####FIGURE 5EandF#####
+####FIGURE 6EandF#####
 #Put together these 2 plots:
 DA_pathways_cDNA_plot_MaAslinANCOM
 DA_pathways_DNA_plot_MaAslinANCOM
 
-figure5EandF <-plot_grid(DA_pathways_DNA_plot_MaAslinANCOM+
+figure6EandF <-plot_grid(DA_pathways_DNA_plot_MaAslinANCOM+
                            theme(plot.title = element_blank(),
                                  legend.position = "none",
                                  axis.title.y = element_blank(),
@@ -1832,7 +1832,7 @@ figure5EandF <-plot_grid(DA_pathways_DNA_plot_MaAslinANCOM+
                          rel_heights = c(0.8, 0.3)
                          )
 
-figure5EandF
+figure6EandF
 
 
 ##FECES (DNA vs cDNA)#####
@@ -2456,11 +2456,11 @@ DA_water_pathways_MaAslinANCOM.data <- rbind(ancombc_output_water.pathways_pivot
 
 #STOPPING HERE SINCE THERE ARE NO DA PATHWAYS
 
-####FIGURE 7D - DA EMPHASIS ON DNA vs cDNA#####
+####FIGURE 8D - DA EMPHASIS ON DNA vs cDNA#####
 #Just feces had DA pathways
 DA_fecespathways_plot_MaAslinANCOM_largest_fold
 
-figure7D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM_largest_fold+
+figure8D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM_largest_fold+
                          theme(plot.title = element_blank(),
                                legend.position = "none",
                                axis.title.y = element_blank(),
@@ -2471,7 +2471,7 @@ figure7D <-plot_grid(DA_fecespathways_plot_MaAslinANCOM_largest_fold+
                        ncol = 1)
 # labs(title = "FUNCTIONAL PATHWAYS")+
 # theme(plot.title = element_text(size = 40, face = "bold"))
-figure7D
+figure8D
 
 
 ####SFIGURE9C -  DA EMPHASIS ON DNA vs cDNA - Feces not the largest logfold changes#####
