@@ -4084,7 +4084,7 @@ figure3 <- plot_grid(dendroRA.family.plot.2,
             rel_widths = c(0.5, 0.5))
 figure3
 
-###FIGURE 6AB - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
+###FIGURE 7AB - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
 water_genmat_BC_beta_div 
 feces_genmat_BC_beta_div 
 
@@ -4106,10 +4106,7 @@ WaterandFeces_ARG_beta_div_spider_genmat <- ggarrange(
   legend = "none"
 )
 WaterandFeces_ARG_beta_div_spider_genmat
-figure6AB <- WaterandFeces_ARG_beta_div_spider_genmat
-
-#Save figure
-
+figure7AB <- WaterandFeces_ARG_beta_div_spider_genmat
 
 ##GENUS LEVEL####
 data.bacteria.samples.genus.filt <- merge_low_abundance_grouped_ra(data.bacteria.samples_genus.ra, "sample_type", 
@@ -5242,11 +5239,11 @@ top_negative_fold_changes_water<- DA_water_plot_together %>%
   tail(n = 16) #top 8
 top_negative_fold_changes_water
 
-####FIGURE 7 AB- DA EMPHASIS ON DNA vs cDNA#####
+####FIGURE 8 AB- DA EMPHASIS ON DNA vs cDNA#####
 #Put together these 2 plots:
 combined_plot_feces_largest_fold_changes
 combined_plot_water
-figure7AB <-plot_grid(combined_plot_feces_largest_fold_changes+
+figure8AB <-plot_grid(combined_plot_feces_largest_fold_changes+
                          theme(plot.title = element_blank()), 
                     combined_plot_water+
                       theme(plot.title = element_blank()),
@@ -5257,7 +5254,7 @@ figure7AB <-plot_grid(combined_plot_feces_largest_fold_changes+
                     rel_heights = c(0.65, 0.35))
   # labs(title = "MICROBIOME")+
   # theme(plot.title = element_text(size = 40, face = "bold"))
-figure7AB
+figure8AB
 
 
 ####SFIGURE9A -  DA EMPHASIS ON DNA vs cDNA - Feces not the largest logfold changes#####
@@ -6473,12 +6470,12 @@ combined_plot_cDNA_others_fold_changes <- plot_grid(
 combined_plot_cDNA_others_fold_changes
 
 
-####FIGURE 5AandB#####
+####FIGURE 6AandB#####
 #Put together these 2 plots:
 combined_plot_DNA_largest_fold_changes
 combined_plot_cDNA_largest_fold_changes
 
-figure5AandB <-plot_grid(
+figure6AandB <-plot_grid(
   combined_plot_DNA_largest_fold_changes +
     theme(plot.title = element_blank()),
   combined_plot_cDNA_largest_fold_changes +
@@ -6488,7 +6485,7 @@ figure5AandB <-plot_grid(
   label_size = 35,
   rel_heights = c(0.6, 0.4),
   ncol = 1) 
-figure5AandB
+figure6AandB
 
 ####SFIGURE8AB -  DA EMPHASIS ON FECES VS CATCH BASINS - Not the largest logfold changes#####
 #Put together these 2 plots:
