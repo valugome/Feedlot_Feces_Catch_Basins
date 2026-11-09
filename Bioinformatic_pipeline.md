@@ -31,7 +31,7 @@ sortmerna \
 ```
 
 ## FLASH Read Merging
-Overlapping quality-controlled (QC) metagenomic and rRNA-filtered metatranscriptomic paired-end reads were merged using FLASH (version 2.2.0).
+Overlapping quality-filtered metagenomic and rRNA-filtered metatranscriptomic paired-end reads were merged using FLASH (version 2.2.0).
 
 ```
 flash \
