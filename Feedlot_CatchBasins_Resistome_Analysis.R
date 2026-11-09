@@ -2628,7 +2628,7 @@ cDNAandDNA_BC_beta_div_spider_sampletype <- ggarrange(
 cDNAandDNA_BC_beta_div_spider_sampletype
 
 ##DNA and cDNA ordination plots, next to dendrogram at the group level
-figure4ABC <- 
+figure4 <- 
   plot_grid(dendroRA.ARG.group.plot.2, 
             cDNAandDNA_BC_beta_div_spider_sampletype,
             nrow = 1,
@@ -2636,7 +2636,7 @@ figure4ABC <-
             label_size = 40,
             rel_heights = c(0.25, 0.75)
   )
-figure4ABC
+figure4
 
 
 ###FIGURE 6CD - EMPHASIS ON LIBRARY TYPE COMPARISONS - ONLY ORDINATION PLOTS #######
