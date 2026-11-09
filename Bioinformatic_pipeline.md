@@ -14,7 +14,7 @@ Only paired end reads for which both mates passed quality control were included 
 ## SortMeRNA
 The SortMeRNA database was downloaded from https://github.com/biocore/sortmerna/releases/download/v4.3.4/database.tar.gz
 
-Input reads were quality-controlled (QC) paired mates (i.e., paired-end reads output by Trimmomatic for which both mates passed QC)
+Input reads were quality-filtered paired mates (i.e., paired-end reads output by Trimmomatic for which both mates passed)
 
 ```
 sortmerna \
