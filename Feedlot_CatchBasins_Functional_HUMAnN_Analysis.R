@@ -1145,7 +1145,7 @@ cDNAandDNA_BC_pathways_beta_div_spider_sampletype <- ggarrange(
   align = "h",
   nrow= 1,
   common.legend = TRUE,
-  labels = c("D", "E"),
+  labels = c("A", "B"),
   font.label = list(size = 40),
   legend = "none"
 )
