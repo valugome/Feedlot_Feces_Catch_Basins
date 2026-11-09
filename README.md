@@ -15,6 +15,8 @@ R code to generate figures for microbial taxonomy.
 R code to generate figures for resistome (pool of ARGs).
 ### Feedlot_CatchBasins_Salmonella_SeroSeq
 R code to generate figures for ***Salmonella enterica*** serovars.
+### Feedlot_CatchBasins_Salmonella_Fishers.R
+R code to carry out Fisher's exact test on ***Salmonella enterica*** culture status in CB and Feces.
 ### Feedlot_CatchBasins_Reads_Bioinformatic_Pipeline
 R code for read counts obtained on each step of the bioinformatic pipeline.
 ### Feedlot_CatchBasins_SequencingDepth_HostRemoval_Figures
