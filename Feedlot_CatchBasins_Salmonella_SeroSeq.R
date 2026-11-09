@@ -73,6 +73,10 @@ summary(seroseq_serovars$`WL Reads`)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 170532  452853  542014  622454  702432 1457486 
 
+#Reads that had a hit to the in house CRISPR Salmonella spacer database
+summary(seroseq_serovars$`CSS Reads`)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 4877  357381  534320  602462  735890 1452000 
 
 ##Pivot to longer format 
 seroseq_serovars_long <- pivot_longer(seroseq_serovars,
