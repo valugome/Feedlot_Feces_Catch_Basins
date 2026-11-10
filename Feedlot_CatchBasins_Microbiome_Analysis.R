@@ -284,6 +284,27 @@ names(zymo.genus.palette) <- unique(data.zymos.bacteria.fungi.ra.genus.filt.melt
 zymo.genus.palette$'Staphylococcus' <- "darkblue" 
 zymo.genus.palette$'Others <0.2% RA' <- 'grey90'
 
+#Italicized labels (markdown)
+genus_level_italic_labels_zymos <- c(
+  "Salmonella" = "*Salmonella*",
+  "Staphylococcus" = "*Staphylococcus*", 
+  "unclassified Bacteria" = "unclassified Bacteria",
+  "Bacillus" = "*Bacillus*", 
+  "Listeria" = "*Listeria*", 
+  "Enterococcus" = "*Enterococcus*",
+  "Pseudomonas" = "*Pseudomonas*",
+  "Limosilactobacillus" = "*Limosilactobacillus*",
+  "unclassified Enterobacteriaceae" = "unclassified *Enterobacteriaceae*",
+  "Escherichia" = "*Escherichia*",
+  "Cryptococcus" = "*Cryptococcus*", 
+  "Saccharomyces" = "*Saccharomyces*", 
+  "unclassified Bacilli" = "Unclassified *Bacilli*", 
+  "unclassified Bacillales" = "Unclassified *Bacillales*", 
+  "Cryptococcus" = "*Cryptococcus*", 
+  "Others <0.2% RA" = "Others <0.2% RA"
+)
+
+                                                        
 #Plot at the genus level
 data.zymos.bacteria.fungi.ra.genus.plot <- ggplot(data.zymos.bacteria.fungi.ra.genus.filt.melt, aes(x=Sample, y= Abundance, fill = Genus)) +
   theme_minimal() +
@@ -291,11 +312,12 @@ data.zymos.bacteria.fungi.ra.genus.plot <- ggplot(data.zymos.bacteria.fungi.ra.g
   geom_bar(stat = "summary", colour = "black") +
   scale_y_continuous(expand = c(0.0015,0,0.0015,0)) +
   scale_x_discrete(expand = c(0.03,0,0.03,0)) +
-  scale_fill_manual(values =zymo.genus.palette) +
+  scale_fill_manual(values =zymo.genus.palette,
+                    labels = genus_level_italic_labels_zymos) +
   guides(fill=guide_legend(title.position="top", nrow = 7))+
   theme(legend.position = "bottom",
-        legend.title = element_text(face = "bold", size = 14),
-        legend.text = element_text(size = 12),
+        legend.title = element_text(face = "bold", size = 20),
+        legend.text = element_markdown(size = 18),  
         plot.title = element_text(size = 30, colour = "black", face = "bold"),
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
@@ -305,9 +327,10 @@ data.zymos.bacteria.fungi.ra.genus.plot <- ggplot(data.zymos.bacteria.fungi.ra.g
         axis.title.y = element_text(size = 22),
         axis.text.y = element_text(size = 20, colour = "black"),
         axis.title.x = element_blank(),
-        axis.text.x = element_blank()) 
+        axis.text.x = element_blank()
+       )
 data.zymos.bacteria.fungi.ra.genus.plot
-
+                                                        
 #What are the top genera?
 top_genus_zymo <- data.zymos.bacteria.fungi.ra.genus.filt.melt %>%
   mutate(Abundance = round(Abundance, 2))%>%
