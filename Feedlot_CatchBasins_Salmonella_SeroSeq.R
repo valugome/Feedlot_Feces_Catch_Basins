@@ -229,18 +229,18 @@ seroseq_adonis  <- adonis2(seroseq.jac ~ sample_type + feedlot,
                            seroseq.sampledata.df, 
                            by = "margin", 
                            permutations = 9999)
-seroseq_adonis
+seroseq_adonis  
 #35.5% of variation is due to sample type p = 0.3821
-#30.8% of the variation is due to feedlot p = 0.0006
+#30.9% of the variation is due to feedlot p = 0.0006
 
 #Interaction 
 #PERMANOVA
 set.seed(98)
-seroseq_adonis_interaction  <- adonis2(seroseq.jac ~ sample_type * feedlot, 
+seroseq_adonis_interaction  <- adonis2(seroseq.jac ~  sample_type * feedlot, 
                            seroseq.sampledata.df, 
                            by = "margin", 
                            permutations = 9999)
-seroseq_adonis_interaction   #37.2% of variation is due to the interaction between sample type and feedlot p = 0.0194
+seroseq_adonis_interaction  #2.8% of variation is due to the interaction between sample type and feedlot p = 0.9837
 
 ######Supp table 5.0#######
 stable5.0 <- data.frame(seroseq_adonis, check.names = F)%>%
