@@ -229,23 +229,26 @@ seroseq_adonis  <- adonis2(seroseq.jac ~ sample_type + feedlot,
                            seroseq.sampledata.df, 
                            by = "margin", 
                            permutations = 9999)
-seroseq_adonis  #30.8% of variation is due to feedlot p = 6e-04
+seroseq_adonis
+#35.5% of variation is due to sample type p = 0.3821
+#30.8% of the variation is due to feedlot p = 0.0006
 
-#Interaction - NS
+#Interaction 
 #PERMANOVA
 set.seed(98)
 seroseq_adonis_interaction  <- adonis2(seroseq.jac ~ sample_type * feedlot, 
                            seroseq.sampledata.df, 
                            by = "margin", 
                            permutations = 9999)
-seroseq_adonis_interaction  #2.8% of variation is due to the interaction between sample type and feedlot p = 0.9837
+seroseq_adonis_interaction   #37.2% of variation is due to the interaction between sample type and feedlot p = 0.0194
 
 ######Supp table 5.0#######
 stable5.0 <- data.frame(seroseq_adonis, check.names = F)%>%
+  bind_rows(data.frame(seroseq_adonis_interaction, check.names = F))%>%
   mutate(Dataset = "Salmonella Seroseq Serovars")%>%
   rownames_to_column(var = "Fixed Effect")%>%
   mutate(`Fixed Effect` = str_replace(`Fixed Effect`, "sample_type", "Sample Type"))%>%
-  filter(!`Fixed Effect` %in% c("Residual", "Total"))
+  filter(!grepl("Residual|Total", `Fixed Effect`))
 stable5.0
 
 ###SUPPLEMENTARY TABLE 5.0 SALMONELLA SEROSEQ SECTION#######
