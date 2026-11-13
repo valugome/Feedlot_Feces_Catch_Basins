@@ -2962,45 +2962,11 @@ data.bacteria.samples.feces.tss.bray ##Distance matrix
 data.bacteria.samples.feces.tss.df #metadata dataframe
 data.bacteria.samples.feces.tss.bray.ord ##ordination
 
+#Metadata for all fecal samples
 data.bacteria.samples.feces.salmonella.tss.df<- data.bacteria.samples.feces.tss.df %>%
   mutate (feedlot_salmonella = paste(feedlot, salmonella_culture_status, sep = '_'))%>% ##adding a column concatenating "feedlot" and "Salmonella"
   mutate (salmonella_stat.abbrv = dplyr::recode(salmonella_culture_status, "positive"= "P", "negative"= "N"),
           feedlot = factor(feedlot)) ##making feedlot a factor
-
-#PERMANOVA
-set.seed(87)
-feces_salmonella_BC_adonis <- adonis2(data.bacteria.samples.feces.tss.bray ~ salmonella_culture_status + feedlot, 
-                                      by = "margin", data.bacteria.samples.feces.salmonella.tss.df,  
-                                      permutations = 9999)
-feces_salmonella_BC_adonis 
-#2.8% of variation is due to salmonella_culture_status (positive vs negative) p= 0.039 (s)
-#12.2% of variation is due to feedlot p= 0.001 (S)
-
-#PERMANOVA- Salmonella status interaction with feedlot 
-set.seed(87)
-feces_salmonella_feedlot_adonis_interaction <- adonis2(data.bacteria.samples.feces.tss.bray ~ salmonella_culture_status*feedlot, 
-                                                       by = "margin", 
-                                             data.bacteria.samples.feces.salmonella.tss.df, permutations = 9999)
-feces_salmonella_feedlot_adonis_interaction
-#5.3% of variation is due to salmonella_culture_status interaction with feedlot (p= 0.052) 
-
-#PERMANOVA- Salmonella status stratified by feedlot 
-set.seed(87)
-feces_salmonella_BC_adonis_status <- adonis2(data.bacteria.samples.feces.tss.bray ~ salmonella_culture_status, 
-                                             by = "margin", 
-                                             strata = data.bacteria.samples.feces.salmonella.tss.df$feedlot, 
-                                             data.bacteria.samples.feces.salmonella.tss.df, permutations = 9999)
-feces_salmonella_BC_adonis_status
-#2.7% of variation is due to salmonella_culture_status (positive vs negative) p= 0.0523 
-
-#PERMANOVA- Feedlot stratified by salmonella status
-set.seed(87)
-feces_salmonella_BC_adonis_feedlot <- adonis2(data.bacteria.samples.feces.tss.bray ~ feedlot, 
-                                              by = "margin", 
-                                              strata = data.bacteria.samples.feces.salmonella.tss.df$salmonella_culture_status, 
-                                              data.bacteria.samples.feces.salmonella.tss.df, p.adjust.methods = "BH", permutations = 9999)
-feces_salmonella_BC_adonis_feedlot
-#13% of variation is due to feedlot p= 0.0014
 
 #####FECES DNA#######
 data.bacteria.samples.feces.DNA.tss <- subset_samples(data.bacteria.samples.feces.tss, gen_material =="DNA")
@@ -3267,39 +3233,6 @@ data.bacteria.samples.water.salmonella.tss.df<- data.bacteria.samples.water.tss.
   mutate (feedlot_salmonella = paste(feedlot, salmonella_culture_status, sep = '_'), #adding a column concatenating "feedlot" and "Salmonella"
           salmonella_stat.abbrv = dplyr::recode(salmonella_culture_status, "positive"= "P", "negative"= "N"),
           feedlot = factor(feedlot)) ##making feedlot a factor
-
-#PERMANOVA
-set.seed(87)
-water_salmonella_BC_adonis <- adonis2(data.bacteria.samples.water.tss.bray ~ 
-                                        salmonella_culture_status + feedlot, by = "margin", 
-                                      data.bacteria.samples.water.salmonella.tss.df, p.adjust.methods = "BH", 
-                                      permutations = 9999)
-water_salmonella_BC_adonis 
-#8.6% of variation is due to salmonella_culture_status (positive vs negative) p=  0.0019
-#63.7% of variation is due to feedlot p= 0.0001
-
-#PERMANOVA- Salmonella status interaction with feedlot 
-set.seed(87)
-water_salmonella_feedlot_adonis_interaction <- adonis2(data.bacteria.samples.water.tss.bray ~ salmonella_culture_status*feedlot, 
-                                                       by = "margin", 
-                                                       data.bacteria.samples.water.salmonella.tss.df, permutations = 9999)
-water_salmonella_feedlot_adonis_interaction
-#6.4% of variation is due to salmonella_culture_status interaction with feedlot (p= 1e-04)
-
-#PERMANOVA- Salmonella status stratified by feedlot 
-set.seed(87)
-water_salmonella_BC_adonis_status <- adonis2(data.bacteria.samples.water.tss.bray ~ salmonella_culture_status, 
-                                             by = "margin", 
-                                             strata = data.bacteria.samples.water.salmonella.tss.df$feedlot, 
-                                             data.bacteria.samples.water.salmonella.tss.df, p.adjust.methods = "BH", permutations = 9999)
-water_salmonella_BC_adonis_status
-#7.7% of variation is due to salmonella_culture_status (positive vs negative) p= 0.12 (ns)
-
-#PERMANOVA- Feedlot stratified by salmonella status
-set.seed(87)
-water_salmonella_BC_adonis_feedlot <- adonis2(data.bacteria.samples.water.tss.bray ~ feedlot, by = "margin", strata = data.bacteria.samples.water.salmonella.tss.df$salmonella_culture_status, data.bacteria.samples.water.salmonella.tss.df, p.adjust.methods = "BH", permutations = 9999)
-water_salmonella_BC_adonis_feedlot
-#62.6% of variation is due to feedlot p= 1e-04
 
 #####CATCH BASIN DNA#######
 data.bacteria.samples.water.DNA.tss <- subset_samples(data.bacteria.samples.water.tss, gen_material =="DNA")
