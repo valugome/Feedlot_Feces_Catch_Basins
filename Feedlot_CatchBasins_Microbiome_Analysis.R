@@ -2962,12 +2962,6 @@ data.bacteria.samples.feces.tss.bray ##Distance matrix
 data.bacteria.samples.feces.tss.df #metadata dataframe
 data.bacteria.samples.feces.tss.bray.ord ##ordination
 
-#Metadata for all fecal samples
-data.bacteria.samples.feces.salmonella.tss.df<- data.bacteria.samples.feces.tss.df %>%
-  mutate (feedlot_salmonella = paste(feedlot, salmonella_culture_status, sep = '_'))%>% ##adding a column concatenating "feedlot" and "Salmonella"
-  mutate (salmonella_stat.abbrv = dplyr::recode(salmonella_culture_status, "positive"= "P", "negative"= "N"),
-          feedlot = factor(feedlot)) ##making feedlot a factor
-
 #####FECES DNA#######
 data.bacteria.samples.feces.DNA.tss <- subset_samples(data.bacteria.samples.feces.tss, gen_material =="DNA")
 data.bacteria.samples.feces.DNA.tss <- prune_taxa(taxa_sums(data.bacteria.samples.feces.DNA.tss) > 0, 
@@ -3228,11 +3222,6 @@ data.bacteria.samples.water.tss.bray ##Distance matrix
 data.bacteria.samples.water.tss.df #metadata dataframe
 data.bacteria.samples.water.tss.bray.ord ##ordination
 
-##metadata
-data.bacteria.samples.water.salmonella.tss.df<- data.bacteria.samples.water.tss.df %>%
-  mutate (feedlot_salmonella = paste(feedlot, salmonella_culture_status, sep = '_'), #adding a column concatenating "feedlot" and "Salmonella"
-          salmonella_stat.abbrv = dplyr::recode(salmonella_culture_status, "positive"= "P", "negative"= "N"),
-          feedlot = factor(feedlot)) ##making feedlot a factor
 
 #####CATCH BASIN DNA#######
 data.bacteria.samples.water.DNA.tss <- subset_samples(data.bacteria.samples.water.tss, gen_material =="DNA")
