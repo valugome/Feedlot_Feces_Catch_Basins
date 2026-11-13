@@ -269,3 +269,23 @@ set.seed(98)
 seroseq_feedlot.permdisp <- permutest(betadisp_seroseq_feedlot, permutations = 9999)
 seroseq_feedlot.permdisp ##NS, p = 0.0682
 
+
+##PERMDISP for interaction 
+#Sample_type by feedlot combination
+seroseq.sampledata.df$sampletype_feedlot <- interaction(
+  seroseq.sampledata.df$sample_type,
+  seroseq.sampledata.df$feedlot,
+  drop = TRUE 
+)
+
+#Run betadisp average distance to centroid
+betadisp_seroseq_feedlot_sampletype <- betadisper(seroseq.jac, 
+                                                  seroseq.sampledata.df$sampletype_feedlot)
+
+##Then test by permuting
+set.seed(98)
+seroseq_sampletype_feedlot.permdisp <-  permutest(betadisp_seroseq_feedlot_sampletype, 
+                                                  permutations = 9999, 
+                                                  pairwise = TRUE)
+seroseq_sampletype_feedlot.permdisp #NS, P = 0.1526
+
